@@ -1,0 +1,26 @@
+[project]
+authors = ["kklein </>"]
+channels = ["conda-forge"]
+description = "Add a short description here"
+name = "metalearners-case-study"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+serve = "marp slides/slides.md --html --allow-local-files -w"
+compile-pdf = "marp slides/slides.md --pdf --html --allow-local-files"
+
+[dependencies]
+jupyter = ">=1.1.1,<2"
+ipython = ">=8.27.0,<9"
+pre-commit = ">=3.8.0,<4"
+metalearners = ">=0.11.0,<0.12"
+matplotlib = ">=3.9.2,<4"
+git_root = ">=0.1,<0.2"
+lightgbm = ">=4.5.0,<5"
+ruff = ">=0.6.9,<0.7"
+pre-commit-hooks = ">=4.6.0,<5"
+typos = ">=1.25.0,<2"
+prettier = ">=3.3.3,<4"
+mypy = ">=1.11.2,<2"
+marp-cli = ">=3.4.0,<4"

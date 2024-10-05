@@ -1,0 +1,64 @@
+exclude: ^\.pixi
+repos:
+  - repo: local
+    hooks:
+      # ensure pixi environments are up to date
+      # workaround for https://github.com/prefix-dev/pixi/issues/1482
+      - id: pixi-install
+        name: pixi-install
+        entry: pixi install
+        language: system
+        always_run: true
+        require_serial: true
+        pass_filenames: false
+      - id: ruff
+        name: ruff
+        entry: pixi run ruff check --fix --exit-non-zero-on-fix --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+      - id: black-conda
+        name: black-conda
+        entry: pixi run black
+        language: system
+        require_serial: true
+        types: [python]
+      - id: mypy
+        name: mypy
+        entry: pixi run mypy
+        language: system
+        types: [python]
+        args: ["--ignore-missing-imports", "--scripts-are-modules"]
+        require_serial: true
+      - id: prettier
+        name: prettier
+        entry: pixi run prettier
+        language: system
+        files: \.(md|yml|yaml)$
+        types: [text]
+        args: ["--write", "--list-different", "--ignore-unknown"]
+      - id: trailing-whitespace
+        name: trim trailing whitespace
+        language: system
+        entry: pixi run trailing-whitespace-fixer
+        types: [text]
+        stages: [commit, push, manual]
+      - id: end-of-file-fixer
+        name: fix end of files
+        language: system
+        entry: pixi run end-of-file-fixer
+        types: [text]
+        stages: [commit, push, manual]
+      - id: check-merge-conflict
+        name: check for merge conflicts
+        language: system
+        entry: pixi run check-merge-conflict
+        types: [text]
+        args: ["--assume-in-merge"]
+      - id: typos
+        name: typos
+        entry: pixi run typos --force-exclude
+        language: system
+        types: [text]
+        exclude: "\\.(csv|html|svg)$"
+        require_serial: true

@@ -1,0 +1,44 @@
+[tool.docformatter]
+black = true
+
+[tool.black]
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+ignore = [
+  "N803",  # https://docs.astral.sh/ruff/rules/invalid-argument-name
+  "N806",  # https://docs.astral.sh/ruff/rules/non-lowercase-variable-in-function
+  "E501",  # https://docs.astral.sh/ruff/faq/#is-the-ruff-linter-compatible-with-black
+]
+select = [
+  # pyflakes
+  "F",
+  # pycodestyle
+  "E", "W",
+  # isort
+  "I",
+  # pep8-naming
+  "N",
+  # pyupgrade
+  "UP",
+]
+
+[tool.mypy]
+python_version = '3.10'
+ignore_missing_imports = true
+no_implicit_optional = true
+check_untyped_defs = true
+
+[tool.typos.default]
+extend-ignore-re = ["(?Rm)^.*#\\s*spellchecker:disable-line$", "extraversion", "BA"]
