@@ -8,9 +8,12 @@ from metalearners import RLearner
 from metalearners.utils import simplify_output
 from shap import TreeExplainer, summary_plot
 
+from sklearn.linear_model import LogisticRegression
+import matplotlib.pyplot as plt
+
 
 def step_1():
-    df = pd.read_csv(Path(git_root()) / "learning_mindset.csv")
+    df = pd.read_csv(Path(git_root()) / "data" / "learning_mindset.csv")
     outcome_column = "achievement_score"
     treatment_column = "intervention"
     feature_columns = [
@@ -98,6 +101,37 @@ def step_5(rlearner, df, feature_columns):
     figure.savefig("shap.png")
 
 
+def step_overlap(df, treatment_column, feature_columns, categorical_feature_columns):
+
+    model = LogisticRegression()
+
+    X = pd.concat(
+        (
+            df[[column for column in feature_columns if column not in categorical_feature_columns]],
+            pd.get_dummies(df[categorical_feature_columns], drop_first=True)
+        ),
+        axis=1,
+    )
+    model.fit(X, df[treatment_column])
+    propensity_scores = model.predict_proba(X)[:, 1]  # Propensity scores
+
+    fig, ax = plt.subplots()
+
+    ax.hist(propensity_scores[df[treatment_column] == 1], label="Treated", alpha=.5)
+    ax.hist(propensity_scores[df[treatment_column] == 0], label="Control", alpha=.5)
+    ax.set_title("Histogram of propensity estimates per treatment assignment group")
+    ax.set_xlabel("$\\hat{p}(W=1|X)$")
+    ax.legend()
+    fig.tight_layout()
+
+    fig.savefig("overlap.png")
+
+
+def step_conditional_ignorability():
+    # TODO
+    pass
+
+
 def main():
     (
         df,
@@ -106,6 +140,9 @@ def main():
         feature_columns,
         categorical_feature_columns,
     ) = step_1()
+
+    step_overlap(df, treatment_column, feature_columns, categorical_feature_columns)
+    step_conditional_ignorability()
 
     step_2(df, outcome_column, treatment_column)
 
