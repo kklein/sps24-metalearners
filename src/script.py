@@ -7,9 +7,7 @@ from lightgbm import LGBMClassifier, LGBMRegressor
 from metalearners import RLearner
 from metalearners.utils import simplify_output
 from shap import TreeExplainer, summary_plot
-
 from sklearn.linear_model import LogisticRegression
-import matplotlib.pyplot as plt
 
 
 def step_1():
@@ -107,8 +105,14 @@ def step_overlap(df, treatment_column, feature_columns, categorical_feature_colu
 
     X = pd.concat(
         (
-            df[[column for column in feature_columns if column not in categorical_feature_columns]],
-            pd.get_dummies(df[categorical_feature_columns], drop_first=True)
+            df[
+                [
+                    column
+                    for column in feature_columns
+                    if column not in categorical_feature_columns
+                ]
+            ],
+            pd.get_dummies(df[categorical_feature_columns], drop_first=True),
         ),
         axis=1,
     )
@@ -117,8 +121,8 @@ def step_overlap(df, treatment_column, feature_columns, categorical_feature_colu
 
     fig, ax = plt.subplots()
 
-    ax.hist(propensity_scores[df[treatment_column] == 1], label="Treated", alpha=.5)
-    ax.hist(propensity_scores[df[treatment_column] == 0], label="Control", alpha=.5)
+    ax.hist(propensity_scores[df[treatment_column] == 1], label="Treated", alpha=0.5)
+    ax.hist(propensity_scores[df[treatment_column] == 0], label="Control", alpha=0.5)
     ax.set_title("Histogram of propensity estimates per treatment assignment group")
     ax.set_xlabel("$\\hat{p}(W=1|X)$")
     ax.legend()

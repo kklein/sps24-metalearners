@@ -5,7 +5,6 @@ header: "![w:50px](imgs/quantco.svg)"
 footer: Francesc Martí Escofet [@fmartiescofet](https://twitter.com/fmartiescofet), Kevin Klein [@kevkle](https://twitter.com/kevkle)
 ---
 
-
 <style>
 img[alt~="center"] {
   display: block;
@@ -21,12 +20,13 @@ img[alt~="center"] {
 
 # Learning From Experiments With Causal Machine Learning
 
-## A case study using ``metalearners``
+## A case study using `metalearners`
 
 Francesc Martí Escofet (@fmartiescofet)
 Kevin Klein (@kevkle)
 
 ---
+
 <!-- _footer: ''-->
 <!-- _header: ''-->
 
@@ -56,8 +56,8 @@ at birth.” -->
 Every datapoint $i$ corresponds to a student.
 
 | Name                  | Symbol | Definition                                                                                           |
-|-----------------------|--------|------------------------------------------------------------------------------------------------------|
-| Covariates            | $X_i$  | Properties of the student or the student's school                                                        |
+| --------------------- | ------ | ---------------------------------------------------------------------------------------------------- |
+| Covariates            | $X_i$  | Properties of the student or the student's school                                                    |
 | Treatment assignments | $W_i$  | $\begin{cases} 1 & \text{if received coaching} \\ 0 & \text{if didn't receive coaching} \end{cases}$ |
 | Outcome               | $Y_i$  | GPA ($\in \mathbb{R}$) after intervention                                                            |
 
@@ -67,25 +67,25 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 
 ## The data, an excerpt
 
-|  $i$   |   schoolid |   intervention |   achievement_score |   success_expect |   ethnicity |   gender |   frst_in_family |   school_urbanicity |   school_mindset |   school_achievement |   school_ethnic_minority |   school_poverty |   school_size |
-|-----:|-----------:|---------------:|--------------------:|-----------------:|------------:|---------:|-----------------:|--------------------:|-----------------:|---------------------:|-------------------------:|-----------------:|--------------:|
-| 6136 |         53 |              0 |         -2.37507    |                4 |           4 |        2 |                1 |                   3 |       0.999101   |             0.440912 |                -1.34477  |       -0.304868  |     -1.6462   |
-| 9033 |         15 |              0 |          1.70741    |                7 |           4 |        1 |                1 |                   2 |      -0.00995388 |             0.762804 |                -0.225752 |        0.0826126 |      0.350672 |
-| 5887 |         57 |              0 |         -0.00345358 |                5 |           4 |        1 |                0 |                   2 |       0.0971624  |            -0.292353 |                -1.03087  |       -0.813799  |      0.184716 |
-| 1975 |         29 |              1 |         -0.26435    |                3 |          12 |        2 |                1 |                   1 |      -0.373087   |             0.113096 |                -0.833417 |       -1.92478   |     -1.14731  |
-| 9445 |          8 |              0 |         -0.696919   |                5 |           1 |        2 |                1 |                   2 |       0.120413   |             0.105801 |                 1.66055  |        0.226545  |      1.00131  |
+|  $i$ | schoolid | intervention | achievement_score | success_expect | ethnicity | gender | frst_in_family | school_urbanicity | school_mindset | school_achievement | school_ethnic_minority | school_poverty | school_size |
+| ---: | -------: | -----------: | ----------------: | -------------: | --------: | -----: | -------------: | ----------------: | -------------: | -----------------: | ---------------------: | -------------: | ----------: |
+| 6136 |       53 |            0 |          -2.37507 |              4 |         4 |      2 |              1 |                 3 |       0.999101 |           0.440912 |               -1.34477 |      -0.304868 |     -1.6462 |
+| 9033 |       15 |            0 |           1.70741 |              7 |         4 |      1 |              1 |                 2 |    -0.00995388 |           0.762804 |              -0.225752 |      0.0826126 |    0.350672 |
+| 5887 |       57 |            0 |       -0.00345358 |              5 |         4 |      1 |              0 |                 2 |      0.0971624 |          -0.292353 |               -1.03087 |      -0.813799 |    0.184716 |
+| 1975 |       29 |            1 |          -0.26435 |              3 |        12 |      2 |              1 |                 1 |      -0.373087 |           0.113096 |              -0.833417 |       -1.92478 |    -1.14731 |
+| 9445 |        8 |            0 |         -0.696919 |              5 |         1 |      2 |              1 |                 2 |       0.120413 |           0.105801 |                1.66055 |       0.226545 |     1.00131 |
 
 ---
 
 ## The data, the details
 
-* n = 10,392
-  * ~1/3 received coaching
-* Originally from National Study of Learning Mindsets
+- n = 10,392
+  - ~1/3 received coaching
+- Originally from National Study of Learning Mindsets
   - Nature, September 2019
-* We used an anonymized version from [Athey and Wager](https://arxiv.org/pdf/1902.07409)
-  * Further processing by Matheus Facure
-  
+- We used an anonymized version from [Athey and Wager](https://arxiv.org/pdf/1902.07409)
+  - Further processing by Matheus Facure
+
 ---
 
 <!-- _footer: ''-->
@@ -128,7 +128,7 @@ Join us!
 ## Data dictionary
 
 | Name                   | Type        | Meaning                                                                                        |
-|------------------------|-------------|------------------------------------------------------------------------------------------------|
+| ---------------------- | ----------- | ---------------------------------------------------------------------------------------------- |
 | ethnicity              | categorical | student race/ethnicity                                                                         |
 | gender                 | categorical | student-identified gender                                                                      |
 | success_expect         | discrete    | self-reported expectations for success in the future                                           |
