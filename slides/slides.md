@@ -151,7 +151,12 @@ Join us!
 
 A randomized control trial usually gives us the first two for free.
 
-For more information see e.g. [Athey and Imbens, 2016](https://arxiv.org/pdf/1607.00698.pdf).
+For more information see e.g. [Athey and Imbens,
+2016](https://arxiv.org/pdf/1607.00698.pdf).
+
+---
+
+![w:750 center](imgs/overlap.png)
 
 ---
 
