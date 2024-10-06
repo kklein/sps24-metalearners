@@ -230,7 +230,7 @@ rlearner.fit(
 rlearner.predict(df[feature_columns], is_oos=False)
 ```
 
-![w:650 center](imgs/cates_hist.png)
+![w:650 center](imgs/hist_cates.png)
 
 ---
 
