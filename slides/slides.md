@@ -88,6 +88,43 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 
 ---
 
+## Loading the data
+
+```python
+
+import pandas as pd
+
+df = pd.read_csv("learning_mindset.csv")
+categorical_feature_columns = [
+    "ethnicity",
+    "gender",
+    "frst_in_family",
+    "school_urbanicity",
+    "schoolid",
+]
+
+for categorical_feature_column in categorical_feature_columns:
+    df[categorical_feature_column] = df[categorical_feature_column].astype(
+        "category"
+    )
+```
+
+---
+
+## Outcomes
+
+```python
+ax.hist(df[treatment_column])
+```
+```python
+ax.hist(df[W=1][outcome_column], density=True)
+ax.hist(df[W=0][outcome_column], density=True)
+```
+
+![w:1100 center](imgs/hist_outcomes.png)
+
+---
+
 <!-- _footer: ''-->
 <!-- _header: ''-->
 

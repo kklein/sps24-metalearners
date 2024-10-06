@@ -9,6 +9,9 @@ from metalearners.utils import simplify_output
 from shap import TreeExplainer, summary_plot
 from sklearn.linear_model import LogisticRegression
 
+_COACHING_COLOR = "green"
+_NO_COACHING_COLOR = "red"
+
 
 def step_1():
     df = pd.read_csv(Path(git_root()) / "data" / "learning_mindset.csv")
@@ -46,8 +49,28 @@ def step_1():
 
 
 def step_2(df, outcome_column, treatment_column):
-    fig, ax = plt.subplots()
-    ax.hist(df[outcome_column])
+    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(30, 10))
+    axs[0].hist(df[outcome_column])
+    axs[0].set_xlabel("outcome")
+
+    axs[1].hist(
+        df[df[treatment_column] == 1][outcome_column],
+        density=True,
+        alpha=0.5,
+        color=_COACHING_COLOR,
+        label="coaching",
+    )
+    axs[1].hist(
+        df[df[treatment_column] == 0][outcome_column],
+        density=True,
+        alpha=0.5,
+        label="no coaching",
+        color=_NO_COACHING_COLOR,
+    )
+    axs[1].set_xlabel("outcome")
+    axs[1].legend()
+
+    fig.suptitle("Histograms of outcomes")
     fig.savefig("hist_outcomes.png")
 
     print(f"fraction of treatment: {df[treatment_column].mean()}")
