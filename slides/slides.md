@@ -79,7 +79,7 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 
 ## The data, the details
 
-- n = 10,392
+- n = 10,391
   - ~1/3 received coaching
 - Originally from National Study of Learning Mindsets
   - Nature, September 2019
