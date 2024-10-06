@@ -156,6 +156,84 @@ ax.hist(df[W=0][outcome_column], density=True)
 
 ---
 
+## Creating a first MetaLearner
+
+<div data-marpit-fragment>
+
+```python
+from metalearners import RLearner
+from lightgbm import LGBMRegressor, LGBMClassifier
+```
+
+</div>
+<div data-marpit-fragment>
+
+<marp-pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-python">rlearner = RLearner(
+<span style="color:orange">&nbsp;&nbsp;&nbsp;&nbsp;nuisance_model_factory=LGBMRegressor,
+&nbsp;&nbsp;&nbsp;&nbsp;propensity_model_factory=LGBMClassifier,
+&nbsp;&nbsp;&nbsp;&nbsp;treatment_model_factory=LGBMRegressor,</span>
+&nbsp;&nbsp;&nbsp;&nbsp;is_classification=<span class="hljs-literal">False</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;n_variants=<span class="hljs-number">2</span>,
+)
+</code></marp-pre>
+
+</div>
+<div style="visibility: hidden">
+
+```python
+rlearner.fit(
+    X=df[feature_columns], y=df[outcome_column], w=df[treatment_column]
+)
+```
+
+</div>
+
+---
+
+## Creating a first MetaLearner
+
+<div>
+
+```python
+from metalearners import RLearner
+from lightgbm import LGBMRegressor, LGBMClassifier
+```
+
+</div>
+<div>
+
+<marp-pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-python">rlearner = RLearner(
+&nbsp;&nbsp;&nbsp;&nbsp;nuisance_model_factory=LGBMRegressor,
+&nbsp;&nbsp;&nbsp;&nbsp;propensity_model_factory=LGBMClassifier,
+&nbsp;&nbsp;&nbsp;&nbsp;treatment_model_factory=LGBMRegressor,
+<span style="color:orange">&nbsp;&nbsp;&nbsp;&nbsp;is_classification=<span class="hljs-literal">False</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;n_variants=<span class="hljs-number">2</span>,</span>
+)
+</code></marp-pre>
+
+</div>
+<div data-marpit-fragment>
+
+```python
+rlearner.fit(
+    X=df[feature_columns], y=df[outcome_column], w=df[treatment_column]
+)
+```
+
+</div>
+
+---
+
+## Predicting with a MetaLearner
+
+```python
+rlearner.predict(df[feature_columns], is_oos=False)
+```
+
+![w:650 center](imgs/cates_hist.png)
+
+---
+
 <!-- _footer: ''-->
 <!-- _header: ''-->
 
