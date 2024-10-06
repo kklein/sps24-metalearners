@@ -125,6 +125,37 @@ ax.hist(df[W=0][outcome_column], density=True)
 
 ---
 
+## What do we do with the data now?
+
+* Remember, our original question was
+
+  > Which students profit the most from a growth mindset coaching?
+
+* We'll reduce said question to the following question
+
+  > Which student profits how much from a growth mindset coaching?
+
+* The latter we can formalize with notation and terminology from
+  Causal Inference:
+
+  $$\tau(X_i) = \mathbb{E}[Y(\text{coaching}) - Y(\text{no coaching}) | X=X_i]$$
+
+---
+
+## MetaLearners
+
+![bg right 80%](imgs/metalearner.drawio.svg)
+
+<!-- prettier-ignore -->
+* Input
+  - $W$: Treatment assignments
+  - $X$: Covariates/features
+  - $Y$: Outcomes
+* Output
+  - $\hat{\tau}(X)$: CATE estimates
+
+---
+
 <!-- _footer: ''-->
 <!-- _header: ''-->
 
