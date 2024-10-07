@@ -116,6 +116,7 @@ for categorical_feature_column in categorical_feature_columns:
 ```python
 ax.hist(df[treatment_column])
 ```
+
 ```python
 ax.hist(df[W=1][outcome_column], density=True)
 ax.hist(df[W=0][outcome_column], density=True)
@@ -127,15 +128,15 @@ ax.hist(df[W=0][outcome_column], density=True)
 
 ## What do we do with the data now?
 
-* Remember, our original question was
+- Remember, our original question was
 
   > Which students profit the most from a growth mindset coaching?
 
-* We'll reduce said question to the following question
+- We'll reduce said question to the following question
 
   > Which student profits how much from a growth mindset coaching?
 
-* The latter we can formalize with notation and terminology from
+- The latter we can formalize with notation and terminology from
   Causal Inference:
 
   $$\tau(X_i) = \mathbb{E}[Y(\text{coaching}) - Y(\text{no coaching}) | X=X_i]$$
@@ -224,6 +225,19 @@ rlearner.fit(
 
 ---
 
+## Hyperparameter optimization
+
+<!-- prettier-ignore -->
+* HPO can have massive impacts on the prediction quality in regular Machine Learning
+* According to [Machlanski et. al (2023)](https://arxiv.org/abs/2303.01412) this also happens in MetaLearners
+* Three levels to optimize for:
+  * The MetaLearner architecture
+  * The model to choose per base estimator
+  * The model hyperparameters per base model
+* It is not clear how to evaluate the performance of a CATE estimator
+
+---
+
 ## Predicting with a MetaLearner
 
 ```python
@@ -231,6 +245,70 @@ rlearner.predict(df[feature_columns], is_oos=False)
 ```
 
 ![w:650 center](imgs/hist_cates.png)
+
+---
+
+## Performing a grid search
+
+![w:550 center](imgs/grid_search-1.drawio.svg)
+
+---
+
+<!-- _paginate: skip -->
+
+## Performing a grid search
+
+![w:550 center](imgs/grid_search-2.drawio.svg)
+
+---
+
+<!-- _paginate: skip -->
+
+## Performing a grid search
+
+![w:550 center](imgs/grid_search-3.drawio.svg)
+
+---
+
+## Performing a grid search
+
+```python
+gs = MetaLearnerGridSearch(
+    metalearner_factory=RLearner,
+    metalearner_params={"is_classification": False, "n_variants": 2},
+    base_learner_grid={
+        "outcome_model": [LinearRegression, LGBMRegressor],
+        "propensity_model": [LGBMClassifier, QuadraticDiscriminantAnalysis],
+        "treatment_model": [LGBMRegressor],
+    },
+    param_grid={
+        "variant_outcome_model": {"LGBMRegressor": {"n_estimators": [3, 5]}},
+        "treatment_model": {"LGBMRegressor": {"n_estimators": [3, 5]}},
+        "propensity_model": {"LGBMClassifier": {"n_estimators": [5, 20]}},
+    },
+)
+gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
+```
+
+---
+
+| hyper- parameters | time fit | time score | train propensity | train outcome | train r_loss | train treatment | test propensity | test outcome_model | test r_loss | test treatment |
+|:------------------|---------:|-----------:|-----------------:|--------------:|-------------:|----------------:|----------------:|-------------------:|------------:|---------------:|
+| 50,  5,  2,       |  3.54773 |    0.11713 |         -0.63367 |     -0.835621 |     0.811778 |        -1.72781 |       -0.629462 |          -0.810054 |    0.792127 |       -1.69272 |
+| 50,  5,  5,       |  3.83533 |   0.119171 |        -0.632118 |     -0.835519 |     0.811883 |        -1.73073 |       -0.629462 |          -0.810054 |    0.791927 |        -1.6923 |
+| 50,  5,  15,      |  4.37463 |    0.12555 |        -0.632473 |     -0.836073 |     0.814033 |        -1.73471 |       -0.629462 |          -0.810054 |    0.792757 |       -1.69407 |
+| ...               |      ... |        ... |              ... |          -... |          ... |             ... |             ... |                ... |         ... |            ... |
+| 150,  15,  20,    |  10.2345 |   0.163347 |        -0.638332 |     -0.851032 |     0.831193 |        -1.76146 |       -0.629712 |          -0.824815 |    0.808756 |       -1.72776 |
+
+---
+
+## Predicting with a tuned MetaLearner
+
+```python
+tuned_rlearner.predict(df[feature_columns], is_oos=False)
+```
+
+![w:300](imgs/hist_cates.png)![w:300](imgs/hist_cates_tuned.png)
 
 ---
 
