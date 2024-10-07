@@ -5,11 +5,10 @@ import pandas as pd
 from git_root import git_root
 from lightgbm import LGBMClassifier, LGBMRegressor
 from metalearners import RLearner
+from metalearners.grid_search import MetaLearnerGridSearch
 from metalearners.utils import simplify_output
 from shap import TreeExplainer, summary_plot
 from sklearn.linear_model import LogisticRegression
-from metalearners.grid_search import MetaLearnerGridSearch
-
 
 _COACHING_COLOR = "green"
 _NO_COACHING_COLOR = "red"
@@ -124,9 +123,14 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
         },
         param_grid={
             "outcome_model": {
-                "LGBMRegressor": {"n_estimators": [50, 75, 100, 125, 150], "verbose": [-1]}
+                "LGBMRegressor": {
+                    "n_estimators": [50, 75, 100, 125, 150],
+                    "verbose": [-1],
+                }
             },
-            "treatment_model": {"LGBMRegressor": {"n_estimators": [2, 5, 15, 20], "verbose": [-1]}},
+            "treatment_model": {
+                "LGBMRegressor": {"n_estimators": [2, 5, 15, 20], "verbose": [-1]}
+            },
             "propensity_model": {
                 "LGBMClassifier": {"n_estimators": [5, 10, 15], "verbose": [-1]}
             },
@@ -135,17 +139,32 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
 
     from sklearn.model_selection import train_test_split
 
-    X_train, X_validation, y_train, y_validation, w_train, w_validation = train_test_split(
-        df[feature_columns], df[outcome_column], df[treatment_column], test_size=0.25
+    X_train, X_validation, y_train, y_validation, w_train, w_validation = (
+        train_test_split(
+            df[feature_columns],
+            df[outcome_column],
+            df[treatment_column],
+            test_size=0.25,
+        )
     )
     gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
 
-    with open('grid_search.md', 'w') as txt:
+    with open("grid_search.md", "w") as txt:
         txt.write(gs.results_.to_markdown())
 
     best_constellation = gs.results_["test_r_loss_1_vs_0"].idxmin()
-    metalearner_name, outcome_model_name, n_estimators_outcome, _, propensity_model_name, n_estimators_propensity, _, treatment_model_name, n_estimators_treatment, _ = best_constellation
-
+    (
+        metalearner_name,
+        outcome_model_name,
+        n_estimators_outcome,
+        _,
+        propensity_model_name,
+        n_estimators_propensity,
+        _,
+        treatment_model_name,
+        n_estimators_treatment,
+        _,
+    ) = best_constellation
 
     rlearner = RLearner(
         nuisance_model_factory=LGBMRegressor,
@@ -154,7 +173,10 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
         is_classification=False,
         n_variants=2,
         nuisance_model_params={"verbose": -1, "n_estimators": n_estimators_outcome},
-        propensity_model_params={"verbose": -1, "n_estimators": n_estimators_propensity},
+        propensity_model_params={
+            "verbose": -1,
+            "n_estimators": n_estimators_propensity,
+        },
         treatment_model_params={"verbose": -1, "n_estimators": n_estimators_treatment},
     )
 
