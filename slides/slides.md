@@ -248,25 +248,11 @@ rlearner.predict(df[feature_columns], is_oos=False)
 
 ---
 
-## Performing a grid search
-
-![w:550 center](imgs/grid_search-1.drawio.svg)
-
----
-
 <!-- _paginate: skip -->
 
 ## Performing a grid search
 
-![w:550 center](imgs/grid_search-2.drawio.svg)
-
----
-
-<!-- _paginate: skip -->
-
-## Performing a grid search
-
-![w:550 center](imgs/grid_search-3.drawio.svg)
+![w:550 center](imgs/grid_search-big.drawio.svg)
 
 ---
 
@@ -282,9 +268,9 @@ gs = MetaLearnerGridSearch(
         "treatment_model": [LGBMRegressor],
     },
     param_grid={
-        "variant_outcome_model": {"LGBMRegressor": {"n_estimators": [3, 5]}},
-        "treatment_model": {"LGBMRegressor": {"n_estimators": [3, 5]}},
-        "propensity_model": {"LGBMClassifier": {"n_estimators": [5, 20]}},
+        "outcome_model": {"LGBMRegressor": {"n_estimators": [50, 75, 100, 125, 150]}},
+        "treatment_model": {"LGBMRegressor": {"n_estimators": [2, 5, 15, 20]}},
+        "propensity_model": {"LGBMClassifier": {"n_estimators": [5, 15, 20]}},
     },
 )
 gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
