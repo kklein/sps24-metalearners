@@ -11,6 +11,7 @@ from sklearn.linear_model import LogisticRegression
 
 _COACHING_COLOR = "green"
 _NO_COACHING_COLOR = "red"
+_NEUTRAL_COLOR = "grey"
 
 
 def step_1():
@@ -50,11 +51,12 @@ def step_1():
 
 def step_2(df, outcome_column, treatment_column):
     fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(30, 10))
-    axs[0].hist(df[outcome_column])
+    axs[0].hist(df[outcome_column], bins=30, color=_NEUTRAL_COLOR)
     axs[0].set_xlabel("outcome")
 
     axs[1].hist(
         df[df[treatment_column] == 1][outcome_column],
+        bins=30,
         density=True,
         alpha=0.5,
         color=_COACHING_COLOR,
@@ -62,6 +64,7 @@ def step_2(df, outcome_column, treatment_column):
     )
     axs[1].hist(
         df[df[treatment_column] == 0][outcome_column],
+        bins=30,
         density=True,
         alpha=0.5,
         label="no coaching",
@@ -99,7 +102,7 @@ def step_3(df, outcome_column, treatment_column, feature_columns):
     )
 
     fig, ax = plt.subplots()
-    ax.hist(cate_estimates_rlearner)
+    ax.hist(cate_estimates_rlearner, bins=30, color=_NEUTRAL_COLOR)
     fig.savefig("hist_cates.png")
 
     return rlearner
