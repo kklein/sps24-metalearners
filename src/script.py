@@ -8,6 +8,8 @@ from metalearners import RLearner
 from metalearners.utils import simplify_output
 from shap import TreeExplainer, summary_plot
 from sklearn.linear_model import LogisticRegression
+from metalearners.grid_search import MetaLearnerGridSearch
+
 
 _COACHING_COLOR = "green"
 _NO_COACHING_COLOR = "red"
@@ -86,6 +88,9 @@ def step_3(df, outcome_column, treatment_column, feature_columns):
         treatment_model_factory=LGBMRegressor,
         is_classification=False,
         n_variants=2,
+        nuisance_model_params={"verbose": -1, "n_estimators": 100},
+        propensity_model_params={"verbose": -1, "n_estimators": 5},
+        treatment_model_params={"verbose": -1, "n_estimators": 10},
     )
 
     rlearner.fit(
@@ -108,9 +113,68 @@ def step_3(df, outcome_column, treatment_column, feature_columns):
     return rlearner
 
 
-def step_4():
-    # TODO: HPO
-    pass
+def step_4(df, feature_columns, outcome_column, treatment_column):
+    gs = MetaLearnerGridSearch(
+        metalearner_factory=RLearner,
+        metalearner_params={"is_classification": False, "n_variants": 2},
+        base_learner_grid={
+            "outcome_model": [LGBMRegressor],
+            "propensity_model": [LGBMClassifier],
+            "treatment_model": [LGBMRegressor],
+        },
+        param_grid={
+            "outcome_model": {
+                "LGBMRegressor": {"n_estimators": [50, 75, 100, 125, 150], "verbose": [-1]}
+            },
+            "treatment_model": {"LGBMRegressor": {"n_estimators": [2, 5, 15, 20], "verbose": [-1]}},
+            "propensity_model": {
+                "LGBMClassifier": {"n_estimators": [5, 10, 15], "verbose": [-1]}
+            },
+        },
+    )
+
+    from sklearn.model_selection import train_test_split
+
+    X_train, X_validation, y_train, y_validation, w_train, w_validation = train_test_split(
+        df[feature_columns], df[outcome_column], df[treatment_column], test_size=0.25
+    )
+    gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
+
+    with open('grid_search.md', 'w') as txt:
+        txt.write(gs.results_.to_markdown())
+
+    best_constellation = gs.results_["test_r_loss_1_vs_0"].idxmin()
+    metalearner_name, outcome_model_name, n_estimators_outcome, _, propensity_model_name, n_estimators_propensity, _, treatment_model_name, n_estimators_treatment, _ = best_constellation
+
+
+    rlearner = RLearner(
+        nuisance_model_factory=LGBMRegressor,
+        propensity_model_factory=LGBMClassifier,
+        treatment_model_factory=LGBMRegressor,
+        is_classification=False,
+        n_variants=2,
+        nuisance_model_params={"verbose": -1, "n_estimators": n_estimators_outcome},
+        propensity_model_params={"verbose": -1, "n_estimators": n_estimators_propensity},
+        treatment_model_params={"verbose": -1, "n_estimators": n_estimators_treatment},
+    )
+
+    rlearner.fit(
+        X=df[feature_columns],
+        y=df[outcome_column],
+        w=df[treatment_column],
+    )
+
+    cate_estimates_rlearner = simplify_output(
+        rlearner.predict(
+            X=df[feature_columns],
+            is_oos=False,
+        )
+    )
+
+    fig, ax = plt.subplots()
+    ax.hist(cate_estimates_rlearner, bins=30, color=_NEUTRAL_COLOR)
+    fig.savefig("hist_cates_tuned.png")
+    return rlearner
 
 
 def step_5(rlearner, df, feature_columns):
@@ -178,7 +242,7 @@ def main():
 
     rlearner = step_3(df, outcome_column, treatment_column, feature_columns)
 
-    step_4()
+    step_4(df, feature_columns, outcome_column, treatment_column)
 
     step_5(rlearner, df, feature_columns)
 
