@@ -41,6 +41,10 @@ def step_1():
             "category"
         )
 
+    with open("excerpt.md", "w") as txt:
+        sample = df.sample(n=5)[feature_columns + [treatment_column, outcome_column]]
+        txt.write(sample.to_markdown())
+
     return (
         df,
         outcome_column,

@@ -67,13 +67,13 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 
 ## The data, an excerpt
 
-|  $i$ | schoolid | intervention | achievement_score | success_expect | ethnicity | gender | frst_in_family | school_urbanicity | school_mindset | school_achievement | school_ethnic_minority | school_poverty | school_size |
-| ---: | -------: | -----------: | ----------------: | -------------: | --------: | -----: | -------------: | ----------------: | -------------: | -----------------: | ---------------------: | -------------: | ----------: |
-| 6136 |       53 |            0 |          -2.37507 |              4 |         4 |      2 |              1 |                 3 |       0.999101 |           0.440912 |               -1.34477 |      -0.304868 |     -1.6462 |
-| 9033 |       15 |            0 |           1.70741 |              7 |         4 |      1 |              1 |                 2 |    -0.00995388 |           0.762804 |              -0.225752 |      0.0826126 |    0.350672 |
-| 5887 |       57 |            0 |       -0.00345358 |              5 |         4 |      1 |              0 |                 2 |      0.0971624 |          -0.292353 |               -1.03087 |      -0.813799 |    0.184716 |
-| 1975 |       29 |            1 |          -0.26435 |              3 |        12 |      2 |              1 |                 1 |      -0.373087 |           0.113096 |              -0.833417 |       -1.92478 |    -1.14731 |
-| 9445 |        8 |            0 |         -0.696919 |              5 |         1 |      2 |              1 |                 2 |       0.120413 |           0.105801 |                1.66055 |       0.226545 |     1.00131 |
+|  $i$ | schoolid | success_expect | ethnicity | gender | frst_in_family | school_urbanicity | school_mindset | school_achievement | school_ethnic_minority | school_poverty | school_size | intervention | achievement_score |
+|-----:|---------:|---------------:|----------:|-------:|---------------:|------------------:|---------------:|-------------------:|-----------------------:|---------------:|------------:|-------------:|------------------:|
+| 8354 |       22 |              6 |         1 |      2 |              1 |                 4 |        2.66182 |           -3.34782 |                2.35827 |        1.53978 |   -0.903116 |            0 |         -0.472852 |
+| 4500 |       67 |              4 |         4 |      2 |              0 |                 4 |       -1.11534 |            1.05309 |               0.315755 |      0.0545861 |     1.86219 |            0 |          -1.84202 |
+|  840 |       62 |              6 |         4 |      1 |              0 |                 4 |       -1.13224 |           0.726836 |             -0.0570358 |        1.33051 |     1.89235 |            1 |          0.500193 |
+| 5069 |       62 |              5 |         4 |      2 |              1 |                 4 |       -1.13224 |           0.726836 |             -0.0570358 |        1.33051 |     1.89235 |            0 |         -0.533968 |
+| 6338 |       48 |              6 |         4 |      2 |              0 |                 3 |       0.173424 |         -0.0124311 |               -1.24448 |       0.613756 |    -1.12524 |            0 |          0.217232 |
 
 ---
 
@@ -85,6 +85,7 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
   - Nature, September 2019
 - We used an anonymized version from [Athey and Wager](https://arxiv.org/pdf/1902.07409)
   - Further processing by Matheus Facure
+  - TODO: Mention normalization of continuous features
 
 ---
 
@@ -111,6 +112,12 @@ for categorical_feature_column in categorical_feature_columns:
 
 ---
 
+## Why categoricals?
+
+![w:500](imgs/numerical_tree.png)![w:500](imgs/categorical_tree.png)
+
+---
+
 ## Outcomes
 
 ```python
@@ -134,7 +141,7 @@ ax.hist(df[W=0][outcome_column], density=True)
 
 - We'll reduce said question to the following question
 
-  > Which student profits how much from a growth mindset coaching?
+  > How much would a given student $i$ profit from a growth mindset coaching?
 
 - The latter we can formalize with notation and terminology from
   Causal Inference:
@@ -234,7 +241,6 @@ rlearner.fit(
   * The MetaLearner architecture
   * The model to choose per base estimator
   * The model hyperparameters per base model
-* It is not clear how to evaluate the performance of a CATE estimator
 
 ---
 
@@ -248,7 +254,13 @@ rlearner.predict(df[feature_columns], is_oos=False)
 
 ---
 
+<!-- _footer: ''-->
+<!-- _header: ''-->
 <!-- _paginate: skip -->
+
+![bg 100%](imgs/basquiat-frustration.png)
+
+---
 
 ## Performing a grid search
 
@@ -288,7 +300,7 @@ gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
 
 ---
 
-## Predicting with a tuned MetaLearner
+## Predicting with a **tuned** MetaLearner
 
 ```python
 tuned_rlearner.predict(df[feature_columns], is_oos=False)
@@ -297,6 +309,32 @@ tuned_rlearner.predict(df[feature_columns], is_oos=False)
 ![w:300](imgs/hist_cates.png)![w:300](imgs/hist_cates_tuned.png)
 
 ---
+
+![bg 100%](imgs/basquiat-black-box.png)
+
+---
+
+## SHAP values
+
+```python
+from shap import TreeExplainer, summary_plot
+explainer = learner.explainer()
+shap_values = explainer.shap_values(df[feature_columns], TreeExplainer)
+summary_plot(shap_values[0], features=df[feature_columns])
+```
+
+![w:500 center](imgs/shap.png)
+
+
+---
+
+## But now, how are we actually doing?
+
+* TODO: Estimate the ATE and multiply the ATE by a budget
+* TODO: Estimate a policy value of our tuned CATE model
+
+---
+
 
 <!-- _footer: ''-->
 <!-- _header: ''-->
@@ -348,7 +386,7 @@ Join us!
 | school_mindset         | numerical   | school's mean mindset                                                                          |
 | school_achievement     | numerical   | average test scores and college preparation for the previous 4 cohorts of students             |
 | school_ethnic_minority | numerical   | percentage of student body that is Black, Latino, or Native American                           |
-| school_povetry         | numerical   | percentage of students who are from families whose incomes fall below the federal poverty line |
+| school_poverty         | numerical   | percentage of students who are from families whose incomes fall below the federal poverty line |
 | school_size            | numerical   | total number of students in all four grade levels in the school                                |
 
 ---
