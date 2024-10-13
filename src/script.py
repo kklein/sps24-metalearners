@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 from git_root import git_root
 from lightgbm import LGBMClassifier, LGBMRegressor
@@ -244,6 +245,31 @@ def step_5(rlearner, df, feature_columns):
     figure.savefig("shap.png")
 
 
+def step_6(
+    rlearner: RLearner, df, feature_columns, treatment_column, outcome_column, budget
+):
+    propensity_scores = rlearner.predict_nuisance(
+        X=df[feature_columns], model_kind="propensity_model", model_ord=0, is_oos=False
+    )
+
+    cate_estimates_rlearner = simplify_output(
+        rlearner.predict(
+            X=df[feature_columns],
+            is_oos=False,
+        )
+    )
+    budget_indices = cate_estimates_rlearner.argsort()[-budget:][::-1]
+    policy = np.zeros(df.shape[0], dtype=int)
+    policy[budget_indices] = 1
+    # only if they are positive
+    policy = policy * (cate_estimates_rlearner > 0)
+    policy_value = (
+        ((policy == df[treatment_column]) * df[outcome_column])
+        / propensity_scores[np.arange(0, df.shape[0]), policy]
+    ).mean()
+    print(f"Policy value of treating the top {budget} persons: {policy_value}")
+
+
 def step_overlap(df, treatment_column, feature_columns, categorical_feature_columns):
 
     model = LogisticRegression()
@@ -300,6 +326,8 @@ def main():
     step_4(df, feature_columns, outcome_column, treatment_column)
 
     step_5(rlearner, df, feature_columns)
+
+    step_6(rlearner, df, feature_columns, treatment_column, outcome_column, 2000)
 
 
 if __name__ == "__main__":
