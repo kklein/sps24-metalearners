@@ -41,4 +41,4 @@ no_implicit_optional = true
 check_untyped_defs = true
 
 [tool.typos.default]
-extend-ignore-re = ["(?Rm)^.*#\\s*spellchecker:disable-line$", "extraversion", "BA"]
+extend-ignore-re = ["(?Rm)^.*#\\s*spellchecker:disable-line$", "extraversion", "BA", "frst_in_family"]

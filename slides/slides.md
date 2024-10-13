@@ -68,7 +68,7 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 ## The data, an excerpt
 
 |  $i$ | schoolid | success_expect | ethnicity | gender | frst_in_family | school_urbanicity | school_mindset | school_achievement | school_ethnic_minority | school_poverty | school_size | intervention | achievement_score |
-|-----:|---------:|---------------:|----------:|-------:|---------------:|------------------:|---------------:|-------------------:|-----------------------:|---------------:|------------:|-------------:|------------------:|
+| ---: | -------: | -------------: | --------: | -----: | -------------: | ----------------: | -------------: | -----------------: | ---------------------: | -------------: | ----------: | -----------: | ----------------: |
 | 8354 |       22 |              6 |         1 |      2 |              1 |                 4 |        2.66182 |           -3.34782 |                2.35827 |        1.53978 |   -0.903116 |            0 |         -0.472852 |
 | 4500 |       67 |              4 |         4 |      2 |              0 |                 4 |       -1.11534 |            1.05309 |               0.315755 |      0.0545861 |     1.86219 |            0 |          -1.84202 |
 |  840 |       62 |              6 |         4 |      1 |              0 |                 4 |       -1.13224 |           0.726836 |             -0.0570358 |        1.33051 |     1.89235 |            1 |          0.500193 |
@@ -325,16 +325,14 @@ summary_plot(shap_values[0], features=df[feature_columns])
 
 ![w:500 center](imgs/shap.png)
 
-
 ---
 
 ## But now, how are we actually doing?
 
-* TODO: Estimate the ATE and multiply the ATE by a budget
-* TODO: Estimate a policy value of our tuned CATE model
+- TODO: Estimate the ATE and multiply the ATE by a budget
+- TODO: Estimate a policy value of our tuned CATE model
 
 ---
-
 
 <!-- _footer: ''-->
 <!-- _header: ''-->
