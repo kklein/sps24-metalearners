@@ -327,7 +327,14 @@ def main():
 
     step_5(rlearner, df, feature_columns)
 
-    step_6(rlearner, df, feature_columns, treatment_column, outcome_column, 2000)
+    step_6(
+        rlearner,
+        df,
+        feature_columns,
+        treatment_column,
+        outcome_column,
+        df[treatment_column].sum(),
+    )
 
 
 if __name__ == "__main__":
