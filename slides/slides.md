@@ -84,8 +84,7 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 - Originally from National Study of Learning Mindsets
   - Nature, September 2019
 - We used an anonymized version from [Athey and Wager](https://arxiv.org/pdf/1902.07409)
-  - Further processing by Matheus Facure
-  - TODO: Mention normalization of continuous features
+  - All continuous features have been transformed to a standard Normal
 
 ---
 
