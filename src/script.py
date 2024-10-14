@@ -196,7 +196,7 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
         _,
     ) = best_constellation
 
-    rlearner = RLearner(
+    tuned_rlearner = RLearner(
         nuisance_model_factory=LGBMRegressor,
         propensity_model_factory=LGBMClassifier,
         treatment_model_factory=LGBMRegressor,
@@ -220,23 +220,50 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
         random_state=_SEED,
     )
 
-    rlearner.fit(
+    tuned_rlearner.fit(
         X=df[feature_columns],
         y=df[outcome_column],
         w=df[treatment_column],
     )
 
-    cate_estimates_rlearner = simplify_output(
-        rlearner.predict(
+    cate_estimates_tuned_rlearner = simplify_output(
+        tuned_rlearner.predict(
             X=df[feature_columns],
             is_oos=False,
         )
     )
 
+    default_rlearner = RLearner(
+        nuisance_model_factory=LGBMRegressor,
+        propensity_model_factory=LGBMClassifier,
+        treatment_model_factory=LGBMRegressor,
+        is_classification=False,
+        n_variants=2,
+        nuisance_model_params={"verbose": -1},
+        propensity_model_params={"verbose": -1},
+        treatment_model_params={"verbose": -1},
+        random_state=_SEED,
+    )
+
+    default_rlearner.fit(
+        X=df[feature_columns],
+        y=df[outcome_column],
+        w=df[treatment_column],
+    )
+
+    cate_estimates_default_rlearner = simplify_output(
+        default_rlearner.predict(
+            X=df[feature_columns],
+            is_oos=False,
+        )
+    )
+    
     fig, ax = plt.subplots(figsize=_FIG_SIZE_HIST)
-    ax.hist(cate_estimates_rlearner, bins=30, color=_NEUTRAL_COLOR)
+    ax.hist(cate_estimates_default_rlearner, bins=30, color=_NEUTRAL_COLOR, label="tuned", density=True, alpha=0.5)
+    ax.hist(cate_estimates_tuned_rlearner, bins=30, label="default", density=True, alpha=0.5)
+    ax.legend()
     fig.savefig("hist_cates_tuned.png")
-    return rlearner
+    return tuned_rlearner
 
 
 def step_5(rlearner, df, feature_columns):
