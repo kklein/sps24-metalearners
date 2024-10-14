@@ -15,6 +15,8 @@ _COACHING_COLOR = "green"
 _NO_COACHING_COLOR = "red"
 _NEUTRAL_COLOR = "grey"
 
+_SEED = 42
+
 
 def step_1():
     df = pd.read_csv(Path(git_root()) / "data" / "learning_mindset.csv")
@@ -43,7 +45,7 @@ def step_1():
         )
 
     with open("excerpt.md", "w") as txt:
-        sample = df.sample(n=5, random_state=42)[
+        sample = df.sample(n=5, random_state=_SEED)[
             feature_columns + [treatment_column, outcome_column]
         ]
         txt.write(sample.to_markdown())
@@ -97,7 +99,7 @@ def step_3(df, outcome_column, treatment_column, feature_columns):
         nuisance_model_params={"verbose": -1},
         propensity_model_params={"verbose": -1},
         treatment_model_params={"verbose": -1},
-        random_state=42,
+        random_state=_SEED,
     )
 
     rlearner.fit(
@@ -153,7 +155,7 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
             },
         },
         verbose=10,
-        random_state=42,
+        random_state=_SEED,
     )
 
     from sklearn.model_selection import train_test_split
@@ -164,7 +166,7 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
             df[outcome_column],
             df[treatment_column],
             test_size=0.25,
-            random_state=42,
+            random_state=_SEED,
         )
     )
     gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
@@ -211,7 +213,7 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
             "n_estimators": n_estimators_treatment,
             "max_depth": max_depth_treatment,
         },
-        random_state=42,
+        random_state=_SEED,
     )
 
     rlearner.fit(
