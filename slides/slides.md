@@ -90,13 +90,11 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 
 ## Loading the data
 
-
 ```python
 import pandas as pd
 
 df = pd.read_csv("learning_mindset.csv")
 ```
-
 
 <div data-marpit-fragment>
 
