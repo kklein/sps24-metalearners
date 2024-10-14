@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 from git_root import git_root
 from lightgbm import LGBMClassifier, LGBMRegressor
@@ -42,7 +43,9 @@ def step_1():
         )
 
     with open("excerpt.md", "w") as txt:
-        sample = df.sample(n=5)[feature_columns + [treatment_column, outcome_column]]
+        sample = df.sample(n=5, random_state=42)[
+            feature_columns + [treatment_column, outcome_column]
+        ]
         txt.write(sample.to_markdown())
 
     return (
@@ -91,9 +94,10 @@ def step_3(df, outcome_column, treatment_column, feature_columns):
         treatment_model_factory=LGBMRegressor,
         is_classification=False,
         n_variants=2,
-        nuisance_model_params={"verbose": -1, "n_estimators": 100},
-        propensity_model_params={"verbose": -1, "n_estimators": 5},
-        treatment_model_params={"verbose": -1, "n_estimators": 10},
+        nuisance_model_params={"verbose": -1},
+        propensity_model_params={"verbose": -1},
+        treatment_model_params={"verbose": -1},
+        random_state=42,
     )
 
     rlearner.fit(
@@ -128,17 +132,28 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
         param_grid={
             "outcome_model": {
                 "LGBMRegressor": {
-                    "n_estimators": [50, 75, 100, 125, 150],
+                    "n_estimators": [25, 50, 100],
+                    "max_depth": [-1, 5],
                     "verbose": [-1],
                 }
             },
             "treatment_model": {
-                "LGBMRegressor": {"n_estimators": [2, 5, 15, 20], "verbose": [-1]}
+                "LGBMRegressor": {
+                    "n_estimators": [5, 20, 50],
+                    "max_depth": [-1, 3, 5],
+                    "verbose": [-1],
+                }
             },
             "propensity_model": {
-                "LGBMClassifier": {"n_estimators": [5, 10, 15], "verbose": [-1]}
+                "LGBMClassifier": {
+                    "n_estimators": [5, 20, 50],
+                    "max_depth": [-1, 3, 5],
+                    "verbose": [-1],
+                }
             },
         },
+        verbose=10,
+        random_state=42,
     )
 
     from sklearn.model_selection import train_test_split
@@ -149,6 +164,7 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
             df[outcome_column],
             df[treatment_column],
             test_size=0.25,
+            random_state=42,
         )
     )
     gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
@@ -157,15 +173,19 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
         txt.write(gs.results_.to_markdown())
 
     best_constellation = gs.results_["test_r_loss_1_vs_0"].idxmin()
+    print(best_constellation)
     (
         metalearner_name,
         outcome_model_name,
+        max_depth_outcome,
         n_estimators_outcome,
         _,
         propensity_model_name,
+        max_depth_propensity,
         n_estimators_propensity,
         _,
         treatment_model_name,
+        max_depth_treatment,
         n_estimators_treatment,
         _,
     ) = best_constellation
@@ -176,12 +196,22 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
         treatment_model_factory=LGBMRegressor,
         is_classification=False,
         n_variants=2,
-        nuisance_model_params={"verbose": -1, "n_estimators": n_estimators_outcome},
+        nuisance_model_params={
+            "verbose": -1,
+            "n_estimators": n_estimators_outcome,
+            "max_depth": max_depth_outcome,
+        },
         propensity_model_params={
             "verbose": -1,
             "n_estimators": n_estimators_propensity,
+            "max_depth": max_depth_propensity,
         },
-        treatment_model_params={"verbose": -1, "n_estimators": n_estimators_treatment},
+        treatment_model_params={
+            "verbose": -1,
+            "n_estimators": n_estimators_treatment,
+            "max_depth": max_depth_treatment,
+        },
+        random_state=42,
     )
 
     rlearner.fit(
@@ -213,6 +243,31 @@ def step_5(rlearner, df, feature_columns):
     summary_plot(shap_values_rlearner[0], features=df[feature_columns], show=False)
     figure.tight_layout()
     figure.savefig("shap.png")
+
+
+def step_6(
+    rlearner: RLearner, df, feature_columns, treatment_column, outcome_column, budget
+):
+    propensity_scores = rlearner.predict_nuisance(
+        X=df[feature_columns], model_kind="propensity_model", model_ord=0, is_oos=False
+    )
+
+    cate_estimates_rlearner = simplify_output(
+        rlearner.predict(
+            X=df[feature_columns],
+            is_oos=False,
+        )
+    )
+    budget_indices = cate_estimates_rlearner.argsort()[-budget:][::-1]
+    policy = np.zeros(df.shape[0], dtype=int)
+    policy[budget_indices] = 1
+    # only if they are positive
+    policy = policy * (cate_estimates_rlearner > 0)
+    policy_value = (
+        ((policy == df[treatment_column]) * df[outcome_column])
+        / propensity_scores[np.arange(0, df.shape[0]), policy]
+    ).mean()
+    print(f"Policy value of treating the top {budget} persons: {policy_value}")
 
 
 def step_overlap(df, treatment_column, feature_columns, categorical_feature_columns):
@@ -271,6 +326,15 @@ def main():
     step_4(df, feature_columns, outcome_column, treatment_column)
 
     step_5(rlearner, df, feature_columns)
+
+    step_6(
+        rlearner,
+        df,
+        feature_columns,
+        treatment_column,
+        outcome_column,
+        df[treatment_column].sum(),
+    )
 
 
 if __name__ == "__main__":

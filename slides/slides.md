@@ -67,13 +67,13 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 
 ## The data, an excerpt
 
-|  $i$ | schoolid | success_expect | ethnicity | gender | frst_in_family | school_urbanicity | school_mindset | school_achievement | school_ethnic_minority | school_poverty | school_size | intervention | achievement_score |
+|      | schoolid | success_expect | ethnicity | gender | frst_in_family | school_urbanicity | school_mindset | school_achievement | school_ethnic_minority | school_poverty | school_size | intervention | achievement_score |
 | ---: | -------: | -------------: | --------: | -----: | -------------: | ----------------: | -------------: | -----------------: | ---------------------: | -------------: | ----------: | -----------: | ----------------: |
-| 8354 |       22 |              6 |         1 |      2 |              1 |                 4 |        2.66182 |           -3.34782 |                2.35827 |        1.53978 |   -0.903116 |            0 |         -0.472852 |
-| 4500 |       67 |              4 |         4 |      2 |              0 |                 4 |       -1.11534 |            1.05309 |               0.315755 |      0.0545861 |     1.86219 |            0 |          -1.84202 |
-|  840 |       62 |              6 |         4 |      1 |              0 |                 4 |       -1.13224 |           0.726836 |             -0.0570358 |        1.33051 |     1.89235 |            1 |          0.500193 |
-| 5069 |       62 |              5 |         4 |      2 |              1 |                 4 |       -1.13224 |           0.726836 |             -0.0570358 |        1.33051 |     1.89235 |            0 |         -0.533968 |
-| 6338 |       48 |              6 |         4 |      2 |              0 |                 3 |       0.173424 |         -0.0124311 |               -1.24448 |       0.613756 |    -1.12524 |            0 |          0.217232 |
+| 3625 |       75 |              5 |         2 |      1 |              1 |                 3 |       0.991628 |          -0.674142 |                1.56432 |       0.230755 |    -1.51191 |            0 |          -1.30763 |
+| 3037 |        5 |              2 |         2 |      1 |              1 |                 0 |     -0.0551495 |          -0.544506 |                1.30259 |       -1.73516 |   -0.792146 |            1 |         -0.537256 |
+| 2574 |       17 |              7 |         4 |      2 |              1 |                 4 |        1.57064 |            -1.0215 |               0.361202 |          1.044 |   -0.470404 |            1 |           0.86336 |
+| 1488 |       47 |              6 |         5 |      2 |              1 |                 4 |       -1.23927 |           0.599242 |             0.00542947 |        1.26768 |     0.95851 |            1 |           1.80572 |
+| 3677 |       74 |              6 |        11 |      2 |              1 |                 4 |       0.983982 |          -0.449943 |              0.0881594 |      -0.657131 |   -0.323959 |            0 |           0.56474 |
 
 ---
 
@@ -288,6 +288,8 @@ gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
 ```
 
 ---
+
+# TODO: update this
 
 | hyper- parameters | time fit | time score | train propensity | train outcome | train r_loss | train treatment | test propensity | test outcome_model | test r_loss | test treatment |
 | :---------------- | -------: | ---------: | ---------------: | ------------: | -----------: | --------------: | --------------: | -----------------: | ----------: | -------------: |
