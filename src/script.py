@@ -257,10 +257,19 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
             is_oos=False,
         )
     )
-    
+
     fig, ax = plt.subplots(figsize=_FIG_SIZE_HIST)
-    ax.hist(cate_estimates_default_rlearner, bins=30, color=_NEUTRAL_COLOR, label="tuned", density=True, alpha=0.5)
-    ax.hist(cate_estimates_tuned_rlearner, bins=30, label="default", density=True, alpha=0.5)
+    ax.hist(
+        cate_estimates_default_rlearner,
+        bins=30,
+        color=_NEUTRAL_COLOR,
+        label="tuned",
+        density=True,
+        alpha=0.5,
+    )
+    ax.hist(
+        cate_estimates_tuned_rlearner, bins=30, label="default", density=True, alpha=0.5
+    )
     ax.legend()
     fig.savefig("hist_cates_tuned.png")
     return tuned_rlearner
@@ -278,12 +287,10 @@ def step_5(rlearner, df, feature_columns):
     figure.savefig("shap.png")
 
 
-
 def _policy_value(policy, treatment, outcome, propensity_scores):
     n = len(policy)
     policy_value = (
-        ((policy == treatment) * outcome)
-        / propensity_scores[np.arange(0, n), policy]
+        ((policy == treatment) * outcome) / propensity_scores[np.arange(0, n), policy]
     ).mean()
     return policy_value
 
@@ -328,7 +335,9 @@ def step_6(
         propensity_scores=propensity_scores,
     )
 
-    policy_value_uar = (policy_value_1 - policy_value_0) * budget / len(df) + policy_value_0
+    policy_value_uar = (policy_value_1 - policy_value_0) * budget / len(
+        df
+    ) + policy_value_0
 
     experiment_policy = df[treatment_column]
     experiment_policy_value = _policy_value(
@@ -397,7 +406,7 @@ def main():
 
     step_2(df, outcome_column, treatment_column)
 
-    rlearner = step_3(df, outcome_column, treatment_column, feature_columns)
+    step_3(df, outcome_column, treatment_column, feature_columns)
 
     rlearner_tuned = step_4(df, feature_columns, outcome_column, treatment_column)
 
