@@ -65,6 +65,17 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 
 ---
 
+## The data, the details
+
+- n = 10,391
+  - ~1/3 received coaching
+- Originally from National Study of Learning Mindsets
+  - Nature, September 2019
+- We used an anonymized version from [Athey and Wager](https://arxiv.org/pdf/1902.07409)
+  - All continuous features have been transformed to a standard Normal
+
+---
+
 ## The data, an excerpt
 
 |      | schoolid | success_expect | ethnicity | gender | frst_in_family | school_urbanicity | school_mindset | school_achievement | school_ethnic_minority | school_poverty | school_size | intervention | achievement_score |
@@ -77,24 +88,19 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 
 ---
 
-## The data, the details
-
-- n = 10,391
-  - ~1/3 received coaching
-- Originally from National Study of Learning Mindsets
-  - Nature, September 2019
-- We used an anonymized version from [Athey and Wager](https://arxiv.org/pdf/1902.07409)
-  - All continuous features have been transformed to a standard Normal
-
----
-
 ## Loading the data
 
-```python
 
+```python
 import pandas as pd
 
 df = pd.read_csv("learning_mindset.csv")
+```
+
+
+<div data-marpit-fragment>
+
+```python
 categorical_feature_columns = [
     "ethnicity",
     "gender",
@@ -102,12 +108,18 @@ categorical_feature_columns = [
     "school_urbanicity",
     "schoolid",
 ]
-
-for categorical_feature_column in categorical_feature_columns:
-    df[categorical_feature_column] = df[categorical_feature_column].astype(
-        "category"
-    )
 ```
+
+</div>
+
+<div data-marpit-fragment>
+
+```python
+for column in categorical_feature_columns:
+    df[column] = df[column].astype("category")
+```
+
+</div>
 
 ---
 
