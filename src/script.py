@@ -17,6 +17,9 @@ _NEUTRAL_COLOR = "grey"
 
 _SEED = 42
 
+_FIG_SIZE_HIST = (15, 10)
+_FONT_SIZE = 16
+
 
 def step_1():
     df = pd.read_csv(Path(git_root()) / "data" / "learning_mindset.csv")
@@ -60,7 +63,8 @@ def step_1():
 
 
 def step_2(df, outcome_column, treatment_column):
-    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(30, 10))
+    figsize = (_FIG_SIZE_HIST[0] * 2, _FIG_SIZE_HIST[1])
+    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=figsize)
     axs[0].hist(df[outcome_column], bins=30, color=_NEUTRAL_COLOR)
     axs[0].set_xlabel("outcome")
 
@@ -115,7 +119,7 @@ def step_3(df, outcome_column, treatment_column, feature_columns):
         )
     )
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=_FIG_SIZE_HIST)
     ax.hist(cate_estimates_rlearner, bins=30, color=_NEUTRAL_COLOR)
     fig.savefig("hist_cates.png")
 
@@ -229,14 +233,14 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
         )
     )
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=_FIG_SIZE_HIST)
     ax.hist(cate_estimates_rlearner, bins=30, color=_NEUTRAL_COLOR)
     fig.savefig("hist_cates_tuned.png")
     return rlearner
 
 
 def step_5(rlearner, df, feature_columns):
-    figure = plt.figure()
+    figure = plt.figure(figsize=_FIG_SIZE_HIST)
     rlearner_explainer = rlearner.explainer()
 
     shap_values_rlearner = rlearner_explainer.shap_values(
@@ -292,7 +296,7 @@ def step_overlap(df, treatment_column, feature_columns, categorical_feature_colu
     model.fit(X, df[treatment_column])
     propensity_scores = model.predict_proba(X)[:, 1]  # Propensity scores
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=_FIG_SIZE_HIST)
 
     ax.hist(propensity_scores[df[treatment_column] == 1], label="Treated", alpha=0.5)
     ax.hist(propensity_scores[df[treatment_column] == 0], label="Control", alpha=0.5)
