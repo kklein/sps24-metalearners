@@ -364,7 +364,7 @@ summary_plot(shap_values[0], features=df[feature_columns])
 We can define the policy value as:
 $$ V(\pi) = \mathbb{E}[Y_i(\pi (X_i))]$$
 
-Using our CATE estimates, we can develop a policy that targets the most promising students, specifically, those with the highest CATE estimates.
+Using our CATE estimates, we can define a policy that targets the most promising students, specifically, those with the highest CATE estimates.
 
 ---
 
