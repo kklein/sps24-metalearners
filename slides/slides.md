@@ -262,6 +262,7 @@ rlearner.predict(df[feature_columns], is_oos=False)
 ---
 
 <!-- _paginate: skip -->
+
 ## Performing a grid search
 
 ![w:550 center](imgs/grid_search-1.drawio.svg)
@@ -269,6 +270,7 @@ rlearner.predict(df[feature_columns], is_oos=False)
 ---
 
 <!-- _paginate: skip -->
+
 ## Performing a grid search
 
 ![w:550 center](imgs/grid_search-2.drawio.svg)
@@ -276,6 +278,7 @@ rlearner.predict(df[feature_columns], is_oos=False)
 ---
 
 <!-- _paginate: skip -->
+
 ## Performing a grid search
 
 ![w:550 center](imgs/grid_search-3.drawio.svg)
@@ -283,6 +286,7 @@ rlearner.predict(df[feature_columns], is_oos=False)
 ---
 
 <!-- _paginate: skip -->
+
 ## Performing a grid search
 
 ![w:550 center](imgs/grid_search-4.drawio.svg)
