@@ -331,15 +331,14 @@ gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
 
 ---
 
-# TODO: update this
-
-| hyper- parameters | time fit | time score | train propensity | train outcome | train r_loss | train treatment | test propensity | test outcome_model | test r_loss | test treatment |
-| :---------------- | -------: | ---------: | ---------------: | ------------: | -----------: | --------------: | --------------: | -----------------: | ----------: | -------------: |
-| 50, 5, 2,         |  3.54773 |    0.11713 |         -0.63367 |     -0.835621 |     0.811778 |        -1.72781 |       -0.629462 |          -0.810054 |    0.792127 |       -1.69272 |
-| 50, 5, 5,         |  3.83533 |   0.119171 |        -0.632118 |     -0.835519 |     0.811883 |        -1.73073 |       -0.629462 |          -0.810054 |    0.791927 |        -1.6923 |
-| 50, 5, 15,        |  4.37463 |    0.12555 |        -0.632473 |     -0.836073 |     0.814033 |        -1.73471 |       -0.629462 |          -0.810054 |    0.792757 |       -1.69407 |
-| ...               |      ... |        ... |              ... |          -... |          ... |             ... |             ... |                ... |         ... |            ... |
-| 150, 15, 20,      |  10.2345 |   0.163347 |        -0.638332 |     -0.851032 |     0.831193 |        -1.76146 |       -0.629712 |          -0.824815 |    0.808756 |       -1.72776 |
+| hyperparameters       | time fit | time score | train propensity | train outcome | train r_loss | train treatment | test propensity | test outcome_model | test r_loss | test treatment |
+| :-------------------- | -------: | ---------: | ---------------: | ------------: | -----------: | --------------: | --------------: | -----------------: | ----------: | -------------: |
+| -1, 25, -1, 5, -1, 5  | 0.899935 |   0.304743 |        -0.631725 |     -0.817461 |     0.795676 |        -1.69679 |       -0.632262 |          -0.838749 |    0.813108 |       -1.73267 |
+| -1, 25, -1, 5, -1, 20 | 0.965532 |   0.312325 |        -0.631725 |     -0.817461 |     0.798854 |        -1.70357 |       -0.632262 |          -0.838749 |    0.815334 |       -1.73741 |
+| -1, 25, -1, 5, -1, 50 |  1.19587 |   0.365287 |        -0.631725 |     -0.817461 |     0.804784 |        -1.71622 |       -0.632262 |          -0.838749 |    0.820561 |       -1.74855 |
+| -1, 25, -1, 5, 3, 5   | 0.890464 |   0.299951 |        -0.631725 |     -0.817461 |     0.795109 |        -1.69558 |       -0.632262 |          -0.838749 |     0.81244 |       -1.73125 |
+| ...                   |      ... |        ... |              ... |           ... |          ... |             ... |             ... |                ... |         ... |            ... |
+| 5, 100, 5, 50, 5, 50  |  1.88036 |   0.488988 |        -0.647935 |     -0.829237 |     0.813944 |        -1.71139 |       -0.646439 |          -0.846896 |    0.827979 |       -1.74124 |
 
 ---
 
@@ -372,8 +371,16 @@ summary_plot(shap_values[0], features=df[feature_columns])
 
 ## But now, how are we actually doing?
 
-- TODO: Estimate the ATE and multiply the ATE by a budget
-- TODO: Estimate a policy value of our tuned CATE model
+We can define the policy value as:
+$$ V(\pi) = \mathbb{E}[Y_i(\pi (X_i))]$$
+
+Using our CATE estimates, we can define a policy that targets the most promising students, specifically, those with the highest CATE estimates.
+
+---
+
+## But now, how are we actually doing?
+
+![w:750 center](imgs/policy_value.png)
 
 ---
 
