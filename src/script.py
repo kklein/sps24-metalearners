@@ -21,6 +21,8 @@ _SEED = 42
 _FIG_SIZE_HIST = (15, 10)
 _FONT_SIZE = 16
 
+plt.rcParams.update({'font.size': 22})
+
 
 def step_1():
     df = pd.read_csv(Path(git_root()) / "data" / "learning_mindset.csv")
@@ -136,6 +138,7 @@ def step_3(df, outcome_column, treatment_column, feature_columns):
 
     fig, ax = plt.subplots(figsize=_FIG_SIZE_HIST)
     ax.hist(cate_estimates_rlearner, bins=30, color=_NEUTRAL_COLOR)
+    ax.set_xlabel("$\\hat{\\tau}(X_i)$: treatment effect estimate")
     fig.savefig("hist_cates.png")
 
     return rlearner
@@ -285,6 +288,7 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
     ax.hist(
         cate_estimates_tuned_rlearner, bins=30, label="default", density=True, alpha=0.5
     )
+    ax.set_xlabel("$\\hat{\\tau}(X_i)$: treatment effect estimate")
     ax.legend()
     fig.savefig("hist_cates_tuned.png")
     return tuned_rlearner

@@ -349,7 +349,7 @@ gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
 tuned_rlearner.predict(df[feature_columns], is_oos=False)
 ```
 
-![w:300](imgs/hist_cates.png)![w:300](imgs/hist_cates_tuned.png)
+![w:550 center](imgs/hist_cates_tuned.png)
 
 ---
 
