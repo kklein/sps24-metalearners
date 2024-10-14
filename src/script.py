@@ -21,7 +21,7 @@ _SEED = 42
 _FIG_SIZE_HIST = (15, 10)
 _FONT_SIZE = 16
 
-plt.rcParams.update({'font.size': 22})
+plt.rcParams.update({"font.size": 22})
 
 
 def step_1():
