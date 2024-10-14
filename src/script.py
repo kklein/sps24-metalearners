@@ -15,6 +15,7 @@ from sklearn.linear_model import LogisticRegression
 _COACHING_COLOR = "green"
 _NO_COACHING_COLOR = "red"
 _NEUTRAL_COLOR = "grey"
+_TUNED_COLOR = "orange"
 
 _SEED = 42
 
@@ -69,7 +70,7 @@ def step_2(df, outcome_column, treatment_column):
     figsize = (_FIG_SIZE_HIST[0] * 2, _FIG_SIZE_HIST[1])
     fig, axs = plt.subplots(nrows=1, ncols=2, figsize=figsize)
     axs[0].hist(df[outcome_column], bins=30, color=_NEUTRAL_COLOR)
-    axs[0].set_xlabel("outcome")
+    axs[0].set_xlabel("$Y_i$: outcome")
 
     axs[1].hist(
         df[df[treatment_column] == 1][outcome_column],
@@ -87,10 +88,9 @@ def step_2(df, outcome_column, treatment_column):
         label="no coaching",
         color=_NO_COACHING_COLOR,
     )
-    axs[1].set_xlabel("outcome")
+    axs[1].set_xlabel("$Y_i$: outcome")
     axs[1].legend()
 
-    fig.suptitle("Histograms of outcomes")
     fig.savefig("hist_outcomes.png")
 
     print(f"fraction of treatment: {df[treatment_column].mean()}")
@@ -278,15 +278,20 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
 
     fig, ax = plt.subplots(figsize=_FIG_SIZE_HIST)
     ax.hist(
-        cate_estimates_default_rlearner,
+        cate_estimates_tuned_rlearner,
         bins=30,
-        color=_NEUTRAL_COLOR,
+        color=_TUNED_COLOR,
         label="tuned",
         density=True,
         alpha=0.5,
     )
     ax.hist(
-        cate_estimates_tuned_rlearner, bins=30, label="default", density=True, alpha=0.5
+        cate_estimates_default_rlearner,
+        bins=30,
+        label="default",
+        density=True,
+        alpha=0.5,
+        color=_NEUTRAL_COLOR,
     )
     ax.set_xlabel("$\\hat{\\tau}(X_i)$: treatment effect estimate")
     ax.legend()
