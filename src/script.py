@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import lightgbm as lgbm
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -91,6 +92,20 @@ def step_2(df, outcome_column, treatment_column):
     fig.savefig("hist_outcomes.png")
 
     print(f"fraction of treatment: {df[treatment_column].mean()}")
+
+    model_cat = LGBMRegressor(verbosity=-1, max_depth=2)
+    model_cat.fit(df[["ethnicity"]], df["achievement_score"])
+    fig, ax = plt.subplots(figsize=_FIG_SIZE_HIST)
+    lgbm.plot_tree(model_cat, ax=ax)
+    fig.tight_layout()
+    fig.savefig("categorical_tree.png", transparent=True)
+
+    model_num = LGBMRegressor(verbosity=-1, max_depth=2)
+    model_num.fit(df[["school_size"]], df["achievement_score"])
+    fig, ax = plt.subplots(figsize=_FIG_SIZE_HIST)
+    lgbm.plot_tree(model_num, ax=ax)
+    fig.tight_layout()
+    fig.savefig("numerical_tree.png", transparent=True)
 
 
 def step_3(df, outcome_column, treatment_column, feature_columns):
