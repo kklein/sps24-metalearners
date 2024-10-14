@@ -407,6 +407,15 @@ For more information see e.g. [Athey and Imbens,
 
 ---
 
+## Policy value estimation
+
+We estimated policy values via the 'Inverse-Propensity Weighting' estimator:
+$$ \hat{V}_{IPW}(\pi) = \frac{1}{n} \sum_{i=1}^n \frac{Y_i \mathbb{I}[W_i = \pi(X_i)]}{\Pr[W_i = \pi(X_i) | X_i]} $$
+
+For more details, please see [Stefan Wager's lecture notes](https://web.stanford.edu/~swager/stats361.pdf).
+
+---
+
 ## Python implementations of MetaLearners
 
 |                                           | `metalearners` | `causalml` | `econml` |
