@@ -231,18 +231,6 @@ rlearner.fit(
 
 ---
 
-## Hyperparameter optimization
-
-<!-- prettier-ignore -->
-* HPO can have massive impacts on the prediction quality in regular Machine Learning
-* According to [Machlanski et. al (2023)](https://arxiv.org/abs/2303.01412) this also happens in MetaLearners
-* Three levels to optimize for:
-  * The MetaLearner architecture
-  * The model to choose per base estimator
-  * The model hyperparameters per base model
-
----
-
 ## Predicting with a MetaLearner
 
 ```python
@@ -258,6 +246,46 @@ rlearner.predict(df[feature_columns], is_oos=False)
 <!-- _paginate: skip -->
 
 ![bg 100%](imgs/basquiat-frustration.png)
+
+---
+
+## Hyperparameter optimization
+
+<!-- prettier-ignore -->
+* HPO can have massive impacts on the prediction quality in regular Machine Learning
+* According to [Machlanski et. al (2023)](https://arxiv.org/abs/2303.01412) this also happens in MetaLearners
+* Three levels to optimize for:
+  * The MetaLearner architecture
+  * The model to choose per base estimator
+  * The model hyperparameters per base model
+
+---
+
+<!-- _paginate: skip -->
+## Performing a grid search
+
+![w:550 center](imgs/grid_search-1.drawio.svg)
+
+---
+
+<!-- _paginate: skip -->
+## Performing a grid search
+
+![w:550 center](imgs/grid_search-2.drawio.svg)
+
+---
+
+<!-- _paginate: skip -->
+## Performing a grid search
+
+![w:550 center](imgs/grid_search-3.drawio.svg)
+
+---
+
+<!-- _paginate: skip -->
+## Performing a grid search
+
+![w:550 center](imgs/grid_search-4.drawio.svg)
 
 ---
 
