@@ -295,9 +295,18 @@ def _policy_value(policy, treatment, outcome, propensity_scores):
     return policy_value
 
 
-def step_6(
-    rlearner: RLearner, df, feature_columns, treatment_column, outcome_column, budget
-):
+def _policy_from_budget(cate_estimates, budget):
+    if budget == 0:
+        return np.zeros(len(cate_estimates), dtype=int)
+    budget_indices = cate_estimates.argsort()[-budget:][::-1]
+    policy = np.zeros(len(cate_estimates), dtype=int)
+    policy[budget_indices] = 1
+    # only if they are positive
+    policy = policy * (cate_estimates > 0)
+    return policy
+
+
+def step_6(rlearner: RLearner, df, feature_columns, treatment_column, outcome_column):
     propensity_scores = rlearner.predict_nuisance(
         X=df[feature_columns], model_kind="propensity_model", model_ord=0, is_oos=False
     )
@@ -308,18 +317,18 @@ def step_6(
             is_oos=False,
         )
     )
-    budget_indices = cate_estimates_rlearner.argsort()[-budget:][::-1]
-    cate_policy = np.zeros(df.shape[0], dtype=int)
-    cate_policy[budget_indices] = 1
-    # only if they are positive
-    cate_policy = cate_policy * (cate_estimates_rlearner > 0)
 
-    policy_value_cate = _policy_value(
-        policy=cate_policy,
-        treatment=df[treatment_column],
-        outcome=df[outcome_column],
-        propensity_scores=propensity_scores,
-    )
+    p_treated = np.linspace(0, 1, 101)
+    policy_values = []
+    for p in p_treated:
+        policy = _policy_from_budget(cate_estimates_rlearner, int(p * len(df)))
+        policy_value = _policy_value(
+            policy=policy,
+            treatment=df[treatment_column],
+            outcome=df[outcome_column],
+            propensity_scores=propensity_scores,
+        )
+        policy_values.append(policy_value)
 
     policy_value_0 = _policy_value(
         np.zeros(df.shape[0], dtype=int),
@@ -335,24 +344,36 @@ def step_6(
         propensity_scores=propensity_scores,
     )
 
-    policy_value_uar = (policy_value_1 - policy_value_0) * budget / len(
-        df
-    ) + policy_value_0
+    fig, ax = plt.subplots(figsize=_FIG_SIZE_HIST)
+    ax.plot(p_treated * len(df), policy_values, label="Policy value")
+    ax.plot([0, len(df)], [policy_value_0, policy_value_1], label="UAR")
+    ax.set_xlabel("Number of treated students")
+    ax.set_ylabel("Policy value")
+    ax.legend()
 
-    experiment_policy = df[treatment_column]
-    experiment_policy_value = _policy_value(
-        experiment_policy,
-        treatment=df[treatment_column],
-        outcome=df[outcome_column],
-        propensity_scores=propensity_scores,
-    )
+    # we fix the lim so they don't change when plotting the lines
+    ax.set_xlim(ax.get_xlim())
+    ax.set_ylim(ax.get_ylim())
+    for x in [0.3, 0.5]:
+        y = policy_values[int(x * 100)]
+        y_uar = policy_value_0 + x * (policy_value_1 - policy_value_0)
+        text = f"Number of treated: {round(x*len(df))}\nCATE Policy value: {y:.2f}\nUAR Policy value: {y_uar:.2f}"
+        props = dict(boxstyle="round", facecolor="wheat", alpha=0.5)
+        y_size = ax.get_ylim()[1] - ax.get_ylim()[0]
+        ax.text(
+            x * len(df),
+            y + 0.02 * y_size,
+            text,
+            fontsize=_FONT_SIZE,
+            bbox=props,
+            ha="right",
+            va="bottom",
+        )
+        ax.plot([x * len(df), x * len(df)], [ax.get_ylim()[0], y], "k--", lw=1)
+        ax.plot([ax.get_xlim()[0] * len(df), x * len(df)], [y, y], "k--", lw=1)
 
-    print(f"{policy_value_0=}")
-    print(f"{policy_value_1=}")
-    print(f"{experiment_policy_value=}")
-
-    print(f"Policy value of treating the top {budget} students: {policy_value_cate}")
-    print(f"Policy value of treating {budget} students u.a.r.: {policy_value_uar}")
+    fig.tight_layout()
+    fig.savefig("policy_value.png")
 
 
 def step_overlap(df, treatment_column, feature_columns, categorical_feature_columns):
@@ -412,14 +433,7 @@ def main():
 
     step_5(rlearner_tuned, df, feature_columns)
 
-    step_6(
-        rlearner_tuned,
-        df,
-        feature_columns,
-        treatment_column,
-        outcome_column,
-        df[treatment_column].sum(),
-    )
+    step_6(rlearner_tuned, df, feature_columns, treatment_column, outcome_column)
 
 
 if __name__ == "__main__":
