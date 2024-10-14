@@ -347,7 +347,7 @@ def step_6(rlearner: RLearner, df, feature_columns, treatment_column, outcome_co
     fig, ax = plt.subplots(figsize=_FIG_SIZE_HIST)
     ax.plot(p_treated * len(df), policy_values, label="Policy value")
     ax.plot([0, len(df)], [policy_value_0, policy_value_1], label="UAR")
-    ax.set_xlabel("Number of treated students")
+    ax.set_xlabel("Maximum number of treated students")
     ax.set_ylabel("Policy value")
     ax.legend()
 
