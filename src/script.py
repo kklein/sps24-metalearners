@@ -251,6 +251,16 @@ def step_5(rlearner, df, feature_columns):
     figure.savefig("shap.png")
 
 
+
+def _policy_value(policy, treatment, outcome, propensity_scores):
+    n = len(policy)
+    policy_value = (
+        ((policy == treatment) * outcome)
+        / propensity_scores[np.arange(0, n), policy]
+    ).mean()
+    return policy_value
+
+
 def step_6(
     rlearner: RLearner, df, feature_columns, treatment_column, outcome_column, budget
 ):
@@ -269,11 +279,33 @@ def step_6(
     policy[budget_indices] = 1
     # only if they are positive
     policy = policy * (cate_estimates_rlearner > 0)
-    policy_value = (
-        ((policy == df[treatment_column]) * df[outcome_column])
-        / propensity_scores[np.arange(0, df.shape[0]), policy]
-    ).mean()
-    print(f"Policy value of treating the top {budget} persons: {policy_value}")
+
+    policy_value = _policy_value(
+        policy=policy,
+        treatment=df[treatment_column],
+        outcome=df[outcome_column],
+        propensity_scores=propensity_scores,
+    )
+
+    print(f"Policy value of treating the top {budget} students: {policy_value}")
+
+    policy_value_0 = _policy_value(
+        np.zeros(df.shape[0], dtype=int),
+        treatment=df[treatment_column],
+        outcome=df[outcome_column],
+        propensity_scores=propensity_scores,
+    )
+
+    policy_value_1 = _policy_value(
+        np.ones(df.shape[0], dtype=int),
+        treatment=df[treatment_column],
+        outcome=df[outcome_column],
+        propensity_scores=propensity_scores,
+    )
+
+    policy_value_uar = (policy_value_1 - policy_value_0) * budget / len(df)
+
+    print(f"Policy value of treating {budget} students u.a.r.: {policy_value_uar}")
 
 
 def step_overlap(df, treatment_column, feature_columns, categorical_feature_columns):
