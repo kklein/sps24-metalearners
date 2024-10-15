@@ -170,7 +170,7 @@ def step_4(df, feature_columns, outcome_column, treatment_column):
             },
             "propensity_model": {
                 "LGBMClassifier": {
-                    "n_estimators": [5, 20, 50],
+                    "n_estimators": [5, 20],
                     "max_depth": [-1, 3, 5],
                     "verbose": [-1],
                 }
