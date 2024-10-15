@@ -43,11 +43,28 @@ at birth.” -->
 
 # Which students profit the most from a growth mindset coaching?
 
+
+---
+
+<!-- _paginate: skip -->
+
+## National Study of Learning Mindsets
+
+![w:600 center](imgs/nslm-1.drawio.svg)
+
+---
+
+<!-- _paginate: skip -->
+
+## National Study of Learning Mindsets
+
+![w:600 center](imgs/nslm-2.drawio.svg)
+
 ---
 
 ## National Study of Learning Mindsets
 
-![w:600 center](imgs/nslm.drawio.png)
+![w:600 center](imgs/nslm.drawio.svg)
 
 ---
 
