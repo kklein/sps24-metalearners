@@ -43,7 +43,6 @@ at birth.” -->
 
 # Which students profit the most from a growth mindset coaching?
 
-
 ---
 
 <!-- _paginate: skip -->
