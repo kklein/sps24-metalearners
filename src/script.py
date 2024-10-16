@@ -330,6 +330,10 @@ def _policy_from_budget(cate_estimates, budget):
     return policy
 
 
+def _convert_policy_value_to_gpa(policy_value):
+    return 2.514 + 1.143 * policy_value
+
+
 def step_6(rlearner: RLearner, df, feature_columns, treatment_column, outcome_column):
     propensity_scores = rlearner.predict_nuisance(
         X=df[feature_columns], model_kind="propensity_model", model_ord=0, is_oos=False
@@ -378,12 +382,13 @@ def step_6(rlearner: RLearner, df, feature_columns, treatment_column, outcome_co
     # we fix the lim so they don't change when plotting the lines
     ax.set_xlim(ax.get_xlim())
     ax.set_ylim(ax.get_ylim())
-    for x in [0.3, 0.5]:
+    y_size = ax.get_ylim()[1] - ax.get_ylim()[0]
+    ps = [0.3, 0.55]
+    for x in ps:
         y = policy_values[int(x * 100)]
         y_uar = policy_value_0 + x * (policy_value_1 - policy_value_0)
         text = f"Number of treated: {round(x*len(df))}\nCATE Policy value: {y:.2f}\nUAR Policy value: {y_uar:.2f}"
         props = dict(boxstyle="round", facecolor="wheat", alpha=0.5)
-        y_size = ax.get_ylim()[1] - ax.get_ylim()[0]
         ax.text(
             x * len(df),
             y + 0.02 * y_size,
@@ -398,6 +403,24 @@ def step_6(rlearner: RLearner, df, feature_columns, treatment_column, outcome_co
 
     fig.tight_layout()
     fig.savefig("policy_value.png")
+    for x in ps:
+        y = policy_values[int(x * 100)]
+        y_gpa = _convert_policy_value_to_gpa(y)
+        y_uar = policy_value_0 + x * (policy_value_1 - policy_value_0)
+        y_uar_gpa = _convert_policy_value_to_gpa(y_uar)
+        text = f"Avg GPA CATE Policy: {y_gpa:.2f}\nAvg GPA UAR Policy: {y_uar_gpa:.2f}"
+        props = dict(boxstyle="round", facecolor="red", alpha=0.5)
+
+        ax.text(
+            x * len(df),
+            y + 0.15 * y_size,
+            text,
+            fontsize=_FONT_SIZE,
+            bbox=props,
+            ha="right",
+            va="bottom",
+        )
+    fig.savefig("policy_value_with_gpa.png")
 
 
 def step_overlap(df, treatment_column, feature_columns, categorical_feature_columns):
