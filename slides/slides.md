@@ -41,6 +41,8 @@ at birth.” -->
 
 ---
 
+# We live in a budget-constrained world.
+
 # Which students profit the most from a growth mindset coaching?
 
 ---
@@ -83,12 +85,13 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 
 ## The data, the details
 
-- n = 10,391
-  - ~1/3 received coaching
-- Originally from National Study of Learning Mindsets
-  - Nature, September 2019
-- We used an anonymized version from [Athey and Wager](https://arxiv.org/pdf/1902.07409)
-  - All continuous features have been transformed to a standard Normal
+<!-- prettier-ignore -->
+* n = 10,391
+  * ~1/3 received coaching
+* Originally from National Study of Learning Mindsets
+  * Nature, September 2019
+* We used an anonymized version from [Athey and Wager](https://arxiv.org/pdf/1902.07409)
+  * All continuous features have been transformed to a standard Normal
 
 ---
 
@@ -160,16 +163,17 @@ ax.hist(df[W=0][outcome_column], density=True)
 
 ## What do we do with the data now?
 
-- Remember, our original question was
+<!-- prettier-ignore -->
+* Remember, our original question was
 
   > Which students profit the most from a growth mindset coaching?
 
-- We'll reduce said question to the following question
+* We'll reduce said question to the following question
 
   > How much would a student like student $i$ profit from a growth mindset coaching?
 
-- The latter we can formalize with notation and terminology from
-  Causal Inference:
+* The latter we can formalize with notation and terminology from
+  Causal Inference: **Conidtional Average Treatment Effect** (CATE)
 
   $$\tau(X_i) = \mathbb{E}[Y(\text{coaching}) - Y(\text{no coaching}) | X=X_i]$$
 
