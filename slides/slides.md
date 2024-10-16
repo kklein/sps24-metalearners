@@ -355,29 +355,60 @@ rlearner.predict(df[feature_columns], is_oos=False)
 
 ## Performing a grid search
 
+<div data-marpit-fragment>
+
+```python
+base_learner_grid = {
+    "outcome_model": [LGBMRegressor],
+    "propensity_model": [LGBMClassifier],
+    "treatment_model": [LGBMRegressor],
+}
+```
+
+</div>
+
+<div data-marpit-fragment>
+
+```python
+param_grid = {
+    "outcome_model": {
+        "LGBMRegressor": {"n_estimators": [25, 50, 100], "max_depth": [-1, 5]}
+    },
+    "treatment_model": {
+        "LGBMRegressor": {"n_estimators": [5, 20, 50], "max_depth": [-1, 3, 5]}
+    },
+    "propensity_model": {
+        "LGBMClassifier": {"n_estimators": [5, 50], "max_depth": [-1, 3, 5]}
+    },
+}
+```
+
+</div>
+
+---
+
+## Performing a grid search
+
+<div data-marpit-fragment>
+
 ```python
 gs = MetaLearnerGridSearch(
     metalearner_factory=RLearner,
     metalearner_params={"is_classification": False, "n_variants": 2},
-    base_learner_grid={
-        "outcome_model": [LGBMRegressor],
-        "propensity_model": [LGBMClassifier],
-        "treatment_model": [LGBMRegressor],
-    },
-    param_grid={
-        "outcome_model": {
-            "LGBMRegressor": {"n_estimators": [25, 50, 100], "max_depth": [-1, 5]}
-        },
-        "treatment_model": {
-            "LGBMRegressor": {"n_estimators": [5, 20, 50], "max_depth": [-1, 3, 5]}
-        },
-        "propensity_model": {
-            "LGBMClassifier": {"n_estimators": [5, 50], "max_depth": [-1, 3, 5]}
-        },
-    },
+    base_learner_grid=base_learner_grid,
+    param_grid=param_grid,
 )
+```
+
+</div>
+
+<div data-marpit-fragment>
+
+```python
 gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
 ```
+
+</div>
 
 ---
 
