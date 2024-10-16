@@ -166,7 +166,7 @@ ax.hist(df[W=0][outcome_column], density=True)
 
 - We'll reduce said question to the following question
 
-  > How much would a given student $i$ profit from a growth mindset coaching?
+  > How much would a student like student $i$ profit from a growth mindset coaching?
 
 - The latter we can formalize with notation and terminology from
   Causal Inference:
