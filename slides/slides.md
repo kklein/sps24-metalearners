@@ -43,7 +43,7 @@ at birth.” -->
 
 # We live in a budget-constrained world.
 
-# Which students profit the most from a growth mindset coaching?
+# Which students should be coached?
 
 ---
 
@@ -166,16 +166,30 @@ ax.hist(df[W=0][outcome_column], density=True)
 <!-- prettier-ignore -->
 * Remember, our original question was
 
-  > Which students profit the most from a growth mindset coaching?
+  > (A) Which students should be coached?
 
 * We'll reduce said question to the following question
 
-  > How much would a student like student $i$ profit from a growth mindset coaching?
+  > (B) How much would a student like student $i$ profit from a growth mindset coaching?
 
-* The latter we can formalize with notation and terminology from
-  Causal Inference: **Conditional Average Treatment Effect** (CATE)
+---
+
+## What do we do with the data now?
+
+<!-- prettier-ignore -->
+* > (B) How much would a student like student $i$ profit from a growth mindset coaching?
+
+  formalism: **Conditional Average Treatment Effect** (CATE)
 
   $$\tau(X_i) = \mathbb{E}[Y(\text{coaching}) - Y(\text{no coaching}) | X=X_i]$$
+
+
+* > (A) Which students should be coached?
+
+  formalism: **policy**
+
+  $$\pi(X_i) = \begin{cases} 1 & \text{if } \hat{\tau}(X_i) \geq
+  c_{budget} \\ 0 & \text{otherwise} \end{cases}$$
 
 ---
 
