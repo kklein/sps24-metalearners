@@ -378,6 +378,11 @@ tuned_rlearner.predict(df[feature_columns], is_oos=False)
 
 ---
 
+<!-- _footer: ''-->
+<!-- _header: ''-->
+
+<!-- _paginate: skip -->
+
 ![bg 100%](imgs/basquiat-black-box.png)
 
 ---
