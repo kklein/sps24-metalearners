@@ -181,6 +181,16 @@ ax.hist(df[W=0][outcome_column], density=True)
 
 ## MetaLearners
 
+![bg right 50%](imgs/metalearner2.drawio.svg)
+
+<!-- prettier-ignore -->
+* MetaLearners are **CATE models** which rely on typical, **arbitrary machine learning estimators** (classifiers or regressors) as **components**.
+* Some examples include the S-Learner, T-Learner, F-Learner, X-Learner, R-Learner, M-Learner and DR-Learner.
+
+---
+
+## MetaLearners
+
 ![bg right 80%](imgs/metalearner.drawio.svg)
 
 <!-- prettier-ignore -->
