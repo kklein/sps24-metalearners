@@ -442,19 +442,6 @@ Using our CATE estimates, we can define a policy that targets the most promising
 <!-- _footer: ''-->
 <!-- _header: ''-->
 
-![bg left 80%](imgs/qr-metalearners.svg)
-
-## Please leave feedback on GitHub! :)
-
-[github.com/QuantCo/metalearners](https://github.com/QuantCo/metalearners)
-
-[github.com/kklein/pdp24-metalearners](https://github.com/kklein/pdp24-metalearners)
-
----
-
-<!-- _footer: ''-->
-<!-- _header: ''-->
-
 ## Would you like to work on such topics, too?
 
 Join us!
@@ -472,6 +459,19 @@ Join us!
 
 ---
 
+<!-- _footer: ''-->
+<!-- _header: ''-->
+
+![bg left 80%](imgs/qr-metalearners.svg)
+
+## Please leave feedback on GitHub! :)
+
+[github.com/QuantCo/metalearners](https://github.com/QuantCo/metalearners)
+
+[github.com/kklein/sps24-metalearners](https://github.com/kklein/sps24-metalearners)
+
+---
+
 # Backup
 
 ---
@@ -479,11 +479,11 @@ Join us!
 ## Data dictionary
 
 | Name                   | Type        | Meaning                                                                                        |
-| ---------------------- | ----------- | ---------------------------------------------------------------------------------------------- |
+|------------------------|-------------|------------------------------------------------------------------------------------------------|
 | ethnicity              | categorical | student race/ethnicity                                                                         |
 | gender                 | categorical | student-identified gender                                                                      |
 | success_expect         | discrete    | self-reported expectations for success in the future                                           |
-| frst_in_family         | boolean     | ?? first in family to go to college ??                                                         |
+| frst_in_family         | boolean     | first in family to go to college                                                               |
 | schoolid               | categorical | identifier for each of 76 high schools                                                         |
 | school_urbanicity      | categorical | school's urbanicity (urban, rural, etc.)                                                       |
 | school_mindset         | numerical   | school's mean mindset                                                                          |
