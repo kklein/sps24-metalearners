@@ -173,7 +173,7 @@ ax.hist(df[W=0][outcome_column], density=True)
   > How much would a student like student $i$ profit from a growth mindset coaching?
 
 * The latter we can formalize with notation and terminology from
-  Causal Inference: **Conidtional Average Treatment Effect** (CATE)
+  Causal Inference: **Conditional Average Treatment Effect** (CATE)
 
   $$\tau(X_i) = \mathbb{E}[Y(\text{coaching}) - Y(\text{no coaching}) | X=X_i]$$
 
