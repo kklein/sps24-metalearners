@@ -77,7 +77,7 @@ Every datapoint $i$ corresponds to a student.
 | --------------------- | ------ | ---------------------------------------------------------------------------------------------------- |
 | Covariates            | $X_i$  | Properties of the student or the student's school                                                    |
 | Treatment assignments | $W_i$  | $\begin{cases} 1 & \text{if received coaching} \\ 0 & \text{if didn't receive coaching} \end{cases}$ |
-| Outcome               | $Y_i$  | GPA ($\in \mathbb{R}$) after intervention                                                            |
+| Outcome               | $Y_i$  | GPA ($\in \mathbb{R}$) after treatment                                                               |
 
 $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 
@@ -97,13 +97,13 @@ $\mathcal{D} = \{ (X_i, W_i, Y_i)\}$
 
 ## The data, an excerpt
 
-|      | schoolid | success_expect | ethnicity | gender | frst_in_family | school_urbanicity | school_mindset | school_achievement | school_ethnic_minority | school_poverty | school_size | intervention | achievement_score |
-| ---: | -------: | -------------: | --------: | -----: | -------------: | ----------------: | -------------: | -----------------: | ---------------------: | -------------: | ----------: | -----------: | ----------------: |
-| 3625 |       75 |              5 |         2 |      1 |              1 |                 3 |       0.991628 |          -0.674142 |                1.56432 |       0.230755 |    -1.51191 |            0 |          -1.30763 |
-| 3037 |        5 |              2 |         2 |      1 |              1 |                 0 |     -0.0551495 |          -0.544506 |                1.30259 |       -1.73516 |   -0.792146 |            1 |         -0.537256 |
-| 2574 |       17 |              7 |         4 |      2 |              1 |                 4 |        1.57064 |            -1.0215 |               0.361202 |          1.044 |   -0.470404 |            1 |           0.86336 |
-| 1488 |       47 |              6 |         5 |      2 |              1 |                 4 |       -1.23927 |           0.599242 |             0.00542947 |        1.26768 |     0.95851 |            1 |           1.80572 |
-| 3677 |       74 |              6 |        11 |      2 |              1 |                 4 |       0.983982 |          -0.449943 |              0.0881594 |      -0.657131 |   -0.323959 |            0 |           0.56474 |
+|      | schoolid | success_expect | ethnicity | gender | frst_in_family | school_urbanicity | school_mindset | school_achievement | school_ethnic_minority | school_poverty | school_size | treatment | achievement_score |
+| ---: | -------: | -------------: | --------: | -----: | -------------: | ----------------: | -------------: | -----------------: | ---------------------: | -------------: | ----------: | --------: | ----------------: |
+| 3625 |       75 |              5 |         2 |      1 |              1 |                 3 |       0.991628 |          -0.674142 |                1.56432 |       0.230755 |    -1.51191 |         0 |          -1.30763 |
+| 3037 |        5 |              2 |         2 |      1 |              1 |                 0 |     -0.0551495 |          -0.544506 |                1.30259 |       -1.73516 |   -0.792146 |         1 |         -0.537256 |
+| 2574 |       17 |              7 |         4 |      2 |              1 |                 4 |        1.57064 |            -1.0215 |               0.361202 |          1.044 |   -0.470404 |         1 |           0.86336 |
+| 1488 |       47 |              6 |         5 |      2 |              1 |                 4 |       -1.23927 |           0.599242 |             0.00542947 |        1.26768 |     0.95851 |         1 |           1.80572 |
+| 3677 |       74 |              6 |        11 |      2 |              1 |                 4 |       0.983982 |          -0.449943 |              0.0881594 |      -0.657131 |   -0.323959 |         0 |           0.56474 |
 
 ---
 
@@ -174,6 +174,8 @@ ax.hist(df[W=0][outcome_column], density=True)
 
 ---
 
+<!-- _paginate: skip -->
+
 ## What do we do with the data now?
 
 <!-- prettier-ignore -->
@@ -183,8 +185,59 @@ ax.hist(df[W=0][outcome_column], density=True)
 
   $$\tau(X_i) = \mathbb{E}[Y(\text{coaching}) - Y(\text{no coaching}) | X=X_i]$$
 
+---
 
-* > (A) Which students should be coached?
+<!-- _paginate: skip -->
+
+## What do we do with the data now?
+
+<!-- prettier-ignore -->
+- > (B) How much would a student like student $i$ profit from a growth mindset coaching?
+
+  formalism: **Conditional Average <span style="color:orange">Treatment Effect</span>** (CATE)
+
+  $$\tau(X_i) = \mathbb{E}[\underbrace{Y(\text{coaching}) - Y(\text{no coaching}}_{\text{treatment effect}}) | X=X_i]$$
+
+---
+
+<!-- _paginate: skip -->
+
+## What do we do with the data now?
+
+<!-- prettier-ignore -->
+- > (B) How much would a student like student $i$ profit from a growth mindset coaching?
+
+  formalism: **Conditional <span style="color:orange">Average</span> Treatment Effect** (CATE)
+
+
+  $$\tau(X_i) = \underbrace{\mathbb{E}}_{\text{average}}[Y(\text{coaching}) - Y(\text{no coaching}) | X=X_i]$$
+
+---
+
+<!-- _paginate: skip -->
+
+## What do we do with the data now?
+
+<!-- prettier-ignore -->
+- > (B) How much would a student like student $i$ profit from a growth mindset coaching?
+
+  formalism: **<span style="color:orange">Conditional</span> Average Treatment Effect** (CATE)
+
+  $$\tau(X_i) = \mathbb{E}[Y(\text{coaching}) - Y(\text{no coaching}) \underbrace{| X=X_i}_{\text{conditional}}]$$
+
+---
+
+## What do we do with the data now?
+
+<!-- prettier-ignore -->
+- > (B) How much would a student like student $i$ profit from a growth mindset coaching?
+
+  formalism: **Conditional Average Treatment Effect** (CATE)
+
+  $$\tau(X_i) = \mathbb{E}[Y(\text{coaching}) - Y(\text{no coaching}) | X=X_i]$$
+
+
+- > (A) Which students should be coached?
 
   formalism: **policy**
 
@@ -412,14 +465,14 @@ gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
 
 ---
 
-| hyperparameters       | time fit | time score | train propensity | train outcome | train r_loss | train treatment | test propensity | test outcome_model | test r_loss | test treatment |
-| :-------------------- | -------: | ---------: | ---------------: | ------------: | -----------: | --------------: | --------------: | -----------------: | ----------: | -------------: |
-| -1, 25, -1, 5, -1, 5  | 0.899935 |   0.304743 |        -0.631725 |     -0.817461 |     0.795676 |        -1.69679 |       -0.632262 |          -0.838749 |    0.813108 |       -1.73267 |
-| -1, 25, -1, 5, -1, 20 | 0.965532 |   0.312325 |        -0.631725 |     -0.817461 |     0.798854 |        -1.70357 |       -0.632262 |          -0.838749 |    0.815334 |       -1.73741 |
-| -1, 25, -1, 5, -1, 50 |  1.19587 |   0.365287 |        -0.631725 |     -0.817461 |     0.804784 |        -1.71622 |       -0.632262 |          -0.838749 |    0.820561 |       -1.74855 |
-| -1, 25, -1, 5, 3, 5   | 0.890464 |   0.299951 |        -0.631725 |     -0.817461 |     0.795109 |        -1.69558 |       -0.632262 |          -0.838749 |     0.81244 |       -1.73125 |
-| ...                   |      ... |        ... |              ... |           ... |          ... |             ... |             ... |                ... |         ... |            ... |
-| 5, 100, 5, 50, 5, 50  |  1.88036 |   0.488988 |        -0.647935 |     -0.829237 |     0.813944 |        -1.71139 |       -0.646439 |          -0.846896 |    0.827979 |       -1.74124 |
+| hyperparameters       | time fit | time score | train propensity | train outcome | train r_loss | train treatment | test propensity | test outcome_model | <span style="color:orange;">test r_loss</span> | test treatment |
+| :-------------------- | -------: | ---------: | ---------------: | ------------: | -----------: | --------------: | --------------: | -----------------: | ---------------------------------------------: | -------------: |
+| -1, 25, -1, 5, -1, 5  | 0.899935 |   0.304743 |        -0.631725 |     -0.817461 |     0.795676 |        -1.69679 |       -0.632262 |          -0.838749 |                                       0.813108 |       -1.73267 |
+| -1, 25, -1, 5, -1, 20 | 0.965532 |   0.312325 |        -0.631725 |     -0.817461 |     0.798854 |        -1.70357 |       -0.632262 |          -0.838749 |                                       0.815334 |       -1.73741 |
+| -1, 25, -1, 5, -1, 50 |  1.19587 |   0.365287 |        -0.631725 |     -0.817461 |     0.804784 |        -1.71622 |       -0.632262 |          -0.838749 |                                       0.820561 |       -1.74855 |
+| -1, 25, -1, 5, 3, 5   | 0.890464 |   0.299951 |        -0.631725 |     -0.817461 |     0.795109 |        -1.69558 |       -0.632262 |          -0.838749 |                                        0.81244 |       -1.73125 |
+| ...                   |      ... |        ... |              ... |           ... |          ... |             ... |             ... |                ... |                                            ... |            ... |
+| 5, 100, 5, 50, 5, 50  |  1.88036 |   0.488988 |        -0.647935 |     -0.829237 |     0.813944 |        -1.71139 |       -0.646439 |          -0.846896 |                                       0.827979 |       -1.74124 |
 
 ---
 
