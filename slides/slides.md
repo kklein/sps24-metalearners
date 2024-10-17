@@ -470,6 +470,12 @@ Using our CATE estimates, we can define a policy that targets the most promising
 
 ---
 
+## Making it tangible
+
+![w:750 center](imgs/policy_value_with_gpa.png)
+
+---
+
 <!-- _footer: ''-->
 <!-- _header: ''-->
 
@@ -510,7 +516,7 @@ Join us!
 ## Data dictionary
 
 | Name                   | Type        | Meaning                                                                                        |
-|------------------------|-------------|------------------------------------------------------------------------------------------------|
+| ---------------------- | ----------- | ---------------------------------------------------------------------------------------------- |
 | ethnicity              | categorical | student race/ethnicity                                                                         |
 | gender                 | categorical | student-identified gender                                                                      |
 | success_expect         | discrete    | self-reported expectations for success in the future                                           |
