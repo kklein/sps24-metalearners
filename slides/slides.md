@@ -142,7 +142,7 @@ for column in categorical_feature_columns:
 
 ## Why categoricals?
 
-![w:500](imgs/numerical_tree.png)![w:500](imgs/categorical_tree.png)
+![w:550](imgs/numerical_tree.png)![w:550](imgs/categorical_tree.png)
 
 ---
 
