@@ -51,7 +51,7 @@ at birth.” -->
 
 ## National Study of Learning Mindsets
 
-![w:600 center](imgs/nslm-1.drawio.svg)
+![w:600 center](imgs/nslm-0.drawio.svg)
 
 ---
 
@@ -464,6 +464,10 @@ gs.fit(X_train, y_train, w_train, X_validation, y_validation, w_validation)
 </div>
 
 ---
+
+```python
+gs.results_
+```
 
 | hyperparameters       | time fit | time score | train propensity | train outcome | train r_loss | train treatment | test propensity | test outcome_model | <span style="color:orange;">test r_loss</span> | test treatment |
 | :-------------------- | -------: | ---------: | ---------------: | ------------: | -----------: | --------------: | --------------: | -----------------: | ---------------------------------------------: | -------------: |
